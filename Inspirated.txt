@@ -1,0 +1,8 @@
+To create this tool, I drew inspiration from: 
+
+BlankGrabber > https://github.com/Blank-c/Blank-Grabber
+
+Luna Grabber > https://github.com/Smug901/Luna-Grabber-V2
+
+
+Put stars on their rest, they are great, even better than mine!
