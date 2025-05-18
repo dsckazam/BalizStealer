@@ -64,6 +64,8 @@ Contributions are welcome! Feel free to open issues or pull requests to improve 
 
 ---
 
+Thanks to those who put stars! Big ❤️ to you!
+
 ## 👤 Author
 
 * Kazam – Developer & cybersecurity enthusiast
