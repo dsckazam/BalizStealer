@@ -1,4 +1,5 @@
-![asset](https://github.com/user-attachments/assets/46c15d6e-29fc-40a0-a7c4-49869cd011d5)
+![image](https://github.com/user-attachments/assets/c0f53c12-768f-435d-9bbe-c6c2e110d4d0)
+
 
 # Baliz Stealer ⚡️
 
