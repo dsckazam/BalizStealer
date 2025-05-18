@@ -52,7 +52,7 @@ python Baliz.py
 
 ## ⚠️ Legal Warning
 
-**Baliz Stealer is intended for educational and ethical use only.**
+**Raanzor Stealer is intended for educational and ethical use only.**
 Unauthorized or malicious use is strictly prohibited and may result in legal consequences.
 The author is not responsible for any misuse.
 
