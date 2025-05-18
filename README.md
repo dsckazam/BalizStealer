@@ -1,7 +1,7 @@
 ![image](https://github.com/user-attachments/assets/c0f53c12-768f-435d-9bbe-c6c2e110d4d0)
 
 
-# Baliz Stealer ⚡️
+# Raanzor Stealer ⚡️
 
 **Baliz Stealer** is an advanced information gathering tool built in Python with a sleek CustomTkinter GUI. It collects various sensitive data and sends results via a configurable webhook.
 
