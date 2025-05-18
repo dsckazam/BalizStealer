@@ -20,7 +20,6 @@
 - Custom fake error message  
 - Discord tokens, browsing history, cookies, credit cards extraction  
 - Webhook URL integration for data exfiltration
-- DBCI (Discord Backdoor Client Injection) Inject a backdoor into the Discord client. Even after a password change, you continue to receive the victim's token.
 
 ---
 
