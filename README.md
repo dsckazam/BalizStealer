@@ -1,6 +1,4 @@
-Here’s the README without the license section, in English with emojis:
 
-````markdown
 # Baliz Stealer ⚡️
 
 **Baliz Stealer** is an advanced information gathering tool built in Python with a sleek CustomTkinter GUI. It collects various sensitive data and sends results via a configurable webhook.
@@ -68,7 +66,3 @@ Contributions are welcome! Feel free to open issues or pull requests to improve 
 
 * Kazam – Developer & cybersecurity enthusiast
 
-```
-
-Let me know if you want it customized further!
-```
