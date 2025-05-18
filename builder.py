@@ -24,32 +24,84 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
 
+
+
 class BalizStealer(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Baliz Builder")
-        self.geometry("1090x1000")
+        self.geometry("1100x900")
+        self.minsize(900, 800)
+        self.configure(bg="#1E1E1E")
+
+        top_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
+        top_frame.pack(fill="x", pady=15, padx=15)
 
         image_path = "asset/baliz.png"
         pil_image = Image.open(image_path)
-        ctki_image = CTkImage(pil_image, size=(150, 150))
+        ctki_image = CTkImage(pil_image, size=(120, 120))
+        logo_label = ctk.CTkLabel(top_frame, image=ctki_image, text="")
+        logo_label.image = ctki_image
+        logo_label.pack(side="left")
 
-        self.logo_label = ctk.CTkLabel(self, image=ctki_image, text="")
-        self.logo_label.image = ctki_image
-        self.logo_label.pack(side="top", anchor="nw", padx=10, pady=10)
+        title_label = ctk.CTkLabel(
+            top_frame,
+            text="Baliz Stealer",
+            font=("Comic Sans MS", 48, "bold"),
+            text_color="#E53935",
+            anchor="w"
+        )
+        title_label.pack(side="left", padx=20, pady=20, fill="x", expand=True)
 
-        self.main_title = ctk.CTkLabel(self, text="Baliz Stealer", font=("Arial", 82), text_color="red")
-        self.main_title.pack(pady=(0, 30))
+        right_buttons_frame = ctk.CTkFrame(top_frame, fg_color="transparent")
+        right_buttons_frame.pack(side="right", padx=10, pady=10)
 
-        self.webhook_label = ctk.CTkLabel(self, text="Webhook URL:")
-        self.webhook_label.pack(pady=5)
-        self.webhook_entry = ctk.CTkEntry(self, width=350)
-        self.webhook_entry.pack(pady=5)
-        self.test_webhook_btn = ctk.CTkButton(self, text="Test Webhook", command=self.test_webhook)
-        self.test_webhook_btn.pack(pady=5)
+        self.format_option = ctk.CTkComboBox(
+            right_buttons_frame,
+            values=["Python (.py)", "Executable (.exe)"],
+            width=170,
+            height=35,
+            fg_color="#2B2B2B",
+            dropdown_fg_color="#2B2B2B",
+            text_color="white",
+            button_color="#8B0000",
+            button_hover_color="#B22222"
+        )
+        self.format_option.set("Python (.py)")
+        self.format_option.pack(side="left", padx=(0,10))
 
-        self.options_frame = ctk.CTkFrame(self)
-        self.options_frame.pack(pady=10, fill="x", padx=20)
+        self.generate_btn = ctk.CTkButton(
+            right_buttons_frame,
+            text="Build",
+            width=110,
+            height=35,
+            fg_color="#8B0000",
+            hover_color="#B22222",
+            command=self.generate_script
+        )
+        self.generate_btn.pack(side="left")
+
+        webhook_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
+        webhook_frame.pack(fill="x", padx=30, pady=(0, 20))
+
+        webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Segoe UI", 14), text_color="white")
+        webhook_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
+
+        self.webhook_entry = ctk.CTkEntry(webhook_frame, width=400, placeholder_text="https://discord.com/api/webhooks/...")
+        self.webhook_entry.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+
+        self.test_webhook_btn = ctk.CTkButton(
+            webhook_frame,
+            text="Test Webhook",
+            fg_color="#8B0000",
+            hover_color="#B22222",
+            command=self.test_webhook,
+            width=130,
+            height=30
+        )
+        self.test_webhook_btn.grid(row=0, column=2, padx=10)
+
+        webhook_frame.grid_columnconfigure(1, weight=1)
 
         self.options = {
             "System Info": ctk.BooleanVar(),
@@ -75,37 +127,88 @@ class BalizStealer(ctk.CTk):
             "Common Files": ctk.BooleanVar(),
         }
 
-        rows = 3
-        cols = 7
+        container = ctk.CTkFrame(self, fg_color="#2B2B2B")
+        container.pack(fill="both", expand=True, padx=30, pady=10)
 
-        row, col = 0, 0
-        for name, var in self.options.items():
-            checkbox = ctk.CTkCheckBox(self.options_frame, text=name, variable=var)
-            checkbox.grid(row=row, column=col, sticky="nsew", padx=10, pady=10)
-            col += 1
-            if col >= cols:
-                col = 0
-                row += 1
+        canvas = tk.Canvas(container, bg="#2B2B2B", highlightthickness=0)
+        scrollbar = ctk.CTkScrollbar(container, orientation="vertical", command=canvas.yview)
+        scrollable_frame = ctk.CTkFrame(canvas, fg_color="#2B2B2B")
 
-        for i in range(rows):
-            self.options_frame.grid_rowconfigure(i, weight=1)
-        for j in range(cols):
-            self.options_frame.grid_columnconfigure(j, weight=1)
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
 
-        self.format_frame = ctk.CTkFrame(self)
-        self.format_frame.pack(pady=20)
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
 
-        self.format_label = ctk.CTkLabel(self.format_frame, text="Output Format:")
-        self.format_label.grid(row=0, column=0, padx=10)
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 
-        self.format_option = ctk.CTkComboBox(self.format_frame, values=["Python (.py)", "Executable (.exe)"])
-        self.format_option.grid(row=0, column=1, padx=10)
+        categories = {
+            "System Info & Network": [
+                "System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown"
+            ],
+            "User Data & Privacy": [
+                "Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files"
+            ],
+            "Security & Intrusion": [
+                "Antivirus List", "Fake Error", "Disconnect User"
+            ],
+            "Multimedia": [
+                "Screenshot", "Webcam Screen"
+            ],
+            "Discord & Misc": [
+                "Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop"
+            ]
+        }
 
-        self.generate_btn = ctk.CTkButton(self.format_frame, text="Build", command=self.generate_script)
-        self.generate_btn.grid(row=0, column=2, padx=10)
+        self.checkboxes = {}
 
-        self.fake_error_title = ""
-        self.fake_error_message = ""
+        row_idx = 0
+        for category, opts in categories.items():
+            cat_label = ctk.CTkLabel(scrollable_frame, text=category, font=("", 16, "bold"), text_color="#E53935")
+            cat_label.grid(row=row_idx, column=0, sticky="w", pady=(10,5), columnspan=3)
+            row_idx += 1
+
+            col = 0
+            for opt in opts:
+                checkbox = ctk.CTkCheckBox(
+                    scrollable_frame,
+                    text=opt,
+                    variable=self.options[opt],
+                    onvalue=True,
+                    offvalue=False,
+                    text_color="white",
+                    fg_color="#2B2B2B",
+                    hover_color="#3E3E3E",
+                    command=lambda v=opt: self.checkbox_color_update(v)
+                )
+                checkbox.grid(row=row_idx, column=col, sticky="w", padx=10, pady=3)
+                self.checkboxes[opt] = checkbox
+
+                col += 1
+                if col > 2:
+                    col = 0
+                    row_idx += 1
+            row_idx += 1
+
+        self.status_label = ctk.CTkLabel(self, text="", font=("Segoe UI", 14), text_color="#E53935")
+        self.status_label.pack(pady=10)
+
+        for opt in self.options:
+            self.checkbox_color_update(opt)
+
+    def checkbox_color_update(self, option_name):
+        checkbox = self.checkboxes.get(option_name)
+        if checkbox:
+            if self.options[option_name].get():
+                checkbox.configure(fg_color="#E53935", text_color="white")
+            else:
+                checkbox.configure(fg_color="#2B2B2B", text_color="white")
+
 
     def test_webhook(self):
         url = self.webhook_entry.get()
