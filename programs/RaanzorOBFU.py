@@ -1,6 +1,6 @@
 # <...> Raanzor Obfuscation
 # If you want to use this obfuscation in your projects, please put this url or credit it.
-# 
+# https://github.com/dsckazam/RaanzorOBFU
 
 
 import ast
