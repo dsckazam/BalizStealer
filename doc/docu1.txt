@@ -1,0 +1,45 @@
+📚 Baliz Stealer Documentation 📚
+
+Overview:
+Baliz Stealer is a customizable data gathering tool that collects various system information and sensitive data, then sends it to a specified webhook URL.
+
+Features:
+- System Info 🖥️
+- IP Info 🌐
+- Clipboard Content 📋
+- Browsers List & Passwords 🔑
+- Antivirus List 🛡️
+- Downloads List ⬇️
+- Files on Desktop 🗂️
+- Screenshots 📸
+- Webcam Capture 🎥
+- Wi-Fi SSID Info 📶
+- Kill All Programs or Specific Ones (e.g., Discord) ⚠️
+- Shutdown PC 🔌
+- Fake Error Popup 💥
+- Disconnect User 🔌
+- Credit Cards Info 💳
+- Discord Token 🕵️‍♂️
+- Browsing History & Cookies 🍪
+- Common Files 📁
+
+Usage:
+1. Enter your Discord webhook URL.
+2. Select which options you want to enable by ticking the checkboxes.
+3. Choose output format: Python script (.py) or Executable (.exe).
+4. Click "Build" to generate your customized stealer script.
+5. Deploy the generated script as needed (in ethical, legal contexts only).
+
+Webhook Testing:
+- Click "Test Webhook" to verify that your webhook URL is valid and reachable before generating the script.
+
+Customization:
+- You can configure fake error messages to deceive users during execution.
+- Enable or disable any combination of data gathering and actions depending on your needs.
+
+⚠️ Important:
+Use this tool responsibly and only for authorized testing or educational purposes. Unauthorized use is illegal.
+
+Support:
+For questions or issues, please open an issue or contact the developer.
+
