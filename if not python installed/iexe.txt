@@ -1,1 +1,0 @@
-If python is not installed, here is the executable (safe) version you can always install python and open source it if you don't trust it.
