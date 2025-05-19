@@ -27,7 +27,7 @@
 - [x] **🌍 IPConf**  
 - [x] **💽 HWID**  
 - [x] **🧬 UUID**  
-- [x] **👤 Discord Info (emoji, username, etc.)**
+- [x] **👤 Discord Info**
 
 
 ---
