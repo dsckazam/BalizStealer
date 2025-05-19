@@ -9,25 +9,28 @@
 
 ## 🚀 Features
 
-
+---
 - [x] **🖥️ System info collection**  
 - [x] **🌐 IP information retrieval**  
 - [x] **📋 Clipboard capture**  
-- [x] **🔐 Browsers list & saved passwords**  
+- [x] **📝 Browsers list & saved passwords**  
 - [x] **🛡️ Antivirus detection**  
 - [x] **📁 Downloads & common files scanning**  
-- [x] **📸 Screenshot & webcam capture**  
+- [x] **🖼️ Screenshot & webcam capture**  
 - [x] **📶 Saved Wi-Fi SSIDs**  
-- [x] **🧨 Process control (kill programs, Discord, shutdown)**  
+- [x] **🧨 Process control (kill programs, Discord client, shutdown)**  
 - [x] **❗ Custom fake error message**  
+- [x] **🔌 Disconnect user (network disruption)**  
 - [x] **🎮 Discord tokens, browsing history, cookies, credit cards extraction**  
 - [x] **📬 Webhook URL integration for data exfiltration**  
-- [x] **🧾 TskMgr INFO (get screenshot & running processes)**  
-- [x] **🧠 Shell History**  
-- [x] **🌍 IPConf**  
-- [x] **💽 HWID**  
-- [x] **🧬 UUID**  
-- [x] **👤 Discord Info**
+- [x] **🧾 TskMgr INFO (screenshot & running processes)**  
+- [x] **🧠 Shell history extraction**  
+- [x] **🌍 IP configuration details (IPConf)**  
+- [x] **💽 HWID retrieval**  
+- [x] **🧬 UUID retrieval**  
+- [x] **👤 Discord Info**  
+- [x] **🔑 Credentials extraction (Windows Credentials Manager)**  
+- [x] **🎮 Games data extraction (Steam, Minecraft, Roblox, etc.)**  
 
 
 ---
