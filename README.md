@@ -8,22 +8,22 @@
 ---
 
 ## 🚀 Features
+- [x] **System info collection**  
+- [x] **IP information retrieval**  
+- [x] **Clipboard capture**  
+- [x] **Browsers list & saved passwords**  
+- [x] **Antivirus detection**  
+- **[x] Downloads & common files scanning**  
+- [x] **Screenshot & webcam capture**  
+- [x] **Saved Wi-Fi SSIDs**  
+- [x] **Process control (kill programs, Discord, shutdown)**  
+- [x] **Custom fake error message**  
+- [x] **Discord tokens, browsing history, cookies, credit cards extraction**  
+- [x] **Webhook URL integration for data exfiltration**  
+- [x] **TskMgr INFO (get screenshot & running processes)**  
+- [x] **Shell Hystory**  
+- [x] **IPConf**
 
-- [x] System info collection  
-- [x] IP information retrieval  
-- [x] Clipboard capture  
-- [x] Browsers list & saved passwords  
-- [x] Antivirus detection  
-- [x] Downloads & common files scanning  
-- [x] Screenshot & webcam capture  
-- [x] Saved Wi-Fi SSIDs  
-- [x] Process control (kill programs, Discord, shutdown)  
-- [x] Custom fake error message  
-- [x] Discord tokens, browsing history, cookies, credit cards extraction  
-- [x] Webhook URL integration for data exfiltration
-- [x] TskMgr INFO (get screenshot & running processes)
-- [x] Shell Hystory
-- [x] IPConf 
 
 ---
 
