@@ -23,6 +23,9 @@
 - [x] **TskMgr INFO (get screenshot & running processes)**  
 - [x] **Shell Hystory**  
 - [x] **IPConf**
+- [x] **HWID**
+- [x] **UUID**
+- [x] **Discord Info**
 
 
 ---
