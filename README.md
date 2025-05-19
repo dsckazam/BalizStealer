@@ -13,7 +13,7 @@
 - [x] **Clipboard capture**  
 - [x] **Browsers list & saved passwords**  
 - [x] **Antivirus detection**  
-- **[x] Downloads & common files scanning**  
+- [x] **Downloads & common files scanning**  
 - [x] **Screenshot & webcam capture**  
 - [x] **Saved Wi-Fi SSIDs**  
 - [x] **Process control (kill programs, Discord, shutdown)**  
