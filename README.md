@@ -21,6 +21,9 @@
 - Custom fake error message  
 - Discord tokens, browsing history, cookies, credit cards extraction  
 - Webhook URL integration for data exfiltration
+- TskMgr INFO (get screenshot & running processes)
+- Shell Hystory
+- IPConf 
 
 ---
 
