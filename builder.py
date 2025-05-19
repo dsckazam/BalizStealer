@@ -20,7 +20,7 @@ import win32crypt
 from Crypto.Cipher import AES
 import shutil
 import threading
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
