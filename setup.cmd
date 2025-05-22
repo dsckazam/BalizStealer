@@ -1,5 +1,5 @@
 @echo off
-title BALIZ Stealer - Setup Installer
+title Raanzor Stealer - Setup Installer
 color 4
 mode con: cols=85 lines=30
 
@@ -7,7 +7,7 @@ mode con: cols=85 lines=30
 cls
 echo.
 echo [#]===============================================================[#]
-echo           B A L I Z   S T E A L E R   -   I N S T A L L E R
+echo          R A N Z O R   S T E A L E R   -   I N S T A L L E R
 echo [#]===============================================================[#]
 echo.
 
