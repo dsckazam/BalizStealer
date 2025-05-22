@@ -54,6 +54,14 @@
 > Destructive functions can permanently damage the target system. Use strictly in virtual machines, CTF labs, or ethical testing environments.  
 > **Unauthorized deployment = illegal.**
 
+### 📡 Exfiltration Modes
+
+- [x] **📬 Webhook Discord (Recommended & Fully Stable)**
+- [x] **📲 Telegram Mode (Available in Settings, Experimental)**
+
+> ⚠️ **Note:**  
+> Telegram exfiltration mode is available under the `Settings` section but may present **instability or delivery issues** due to API limitations and current bugs.  
+> ✅ **Recommended:** Use **Discord Webhook** mode for reliable and consistent data reception.
 
 ---
 
