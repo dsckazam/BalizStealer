@@ -11,27 +11,48 @@
 ## 🚀 Features
 
 ---
-- [x] **🖥️ System info collection**  
-- [x] **🌐 IP information retrieval**  
-- [x] **📋 Clipboard capture**  
-- [x] **📝 Browsers list & saved passwords**  
-- [x] **🛡️ Antivirus detection**  
-- [x] **📁 Downloads & common files scanning**  
-- [x] **🖼️ Screenshot & webcam capture**  
-- [x] **📶 Saved Wi-Fi SSIDs**  
-- [x] **🧨 Process control (kill programs, Discord client, shutdown)**  
-- [x] **❗ Custom fake error message**  
-- [x] **🔌 Disconnect user (network disruption)**  
-- [x] **🎮 Discord tokens, browsing history, cookies, credit cards extraction**  
-- [x] **📬 Webhook URL integration for data exfiltration**  
-- [x] **🧾 TskMgr INFO (screenshot & running processes)**  
-- [x] **🧠 Shell history extraction**  
-- [x] **🌍 IP configuration details (IPConf)**  
-- [x] **💽 HWID retrieval**  
-- [x] **🧬 UUID retrieval**  
-- [x] **👤 Discord Info**  
-- [x] **🔑 Credentials extraction (Windows Credentials Manager)**  
-- [x] **🎮 Games data extraction (Steam, Minecraft, Roblox, etc.)**  
+## ✅ Features Checklist
+
+### 🛠️ System & User Information
+- [x] 🖥️ System Information Collection  
+- [x] 🌐 Public & Local IP Address Retrieval  
+- [x] 📋 Clipboard Data Capture  
+- [x] 📝 Installed Browsers Listing & Saved Password Extraction  
+- [x] 🛡️ Antivirus Detection  
+- [x] 📁 Downloads Folder & Common Files Enumeration  
+- [x] 🖼️ Screenshot Capture & Webcam Snapshot  
+- [x] 📶 Saved Wi-Fi SSIDs Extraction  
+- [x] 💽 Hardware ID (HWID) Collection  
+- [x] 🧬 UUID (Universally Unique Identifier) Extraction  
+- [x] 👤 Discord Profile Information Grabber  
+- [x] 🔑 Windows Credentials Manager Dump  
+- [x] 🧠 Shell Command History Retrieval  
+- [x] 🌍 IP Configuration Info (ipconfig details)  
+- [x] 🧾 Task Manager Info Capture (Running Processes + Screenshot)  
+
+### 📦 Data Collection & Exfiltration
+- [x] 🎮 Token, History, Cookies, Credit Cards Extraction (Browsers + Discord)  
+- [x] 🎮 Gaming Platforms Data (Steam, Minecraft, Roblox, etc.)  
+- [x] 📬 Webhook Integration for Data Exfiltration  
+
+### ⚙️ Control & Manipulation
+- [x] 🧨 Process Management (Kill Specific Programs, Discord, Full Shutdown)  
+- [x] ❗ Custom Fake Error Message Display  
+- [x] 🔌 User Disconnection / Network Disruption  
+
+### ☣️ Destructive & Advanced Capabilities
+- [x] 💣 Kill All Programs  
+- [x] 🔻 Kill Discord Client  
+- [x] 📴 Force System Shutdown  
+- [x] 🗑️ System32 Deletion  
+- [x] 🪟 Windows Directory Deletion  
+- [x] 🔧 BootLoader Deletion  
+- [x] ⚠️ UAC Bypass (User Account Control)  
+- [x] 🧼 Automated File Deletion (select folders or files)
+
+> ⚠️ **Warning:**  
+> Destructive functions can permanently damage the target system. Use strictly in virtual machines, CTF labs, or ethical testing environments.  
+> **Unauthorized deployment = illegal.**
 
 
 ---
