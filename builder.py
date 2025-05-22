@@ -233,7 +233,7 @@ class RaanzorStealer(ctk.CTk):
                     row_idx += 1
             row_idx += 1
 
-        # Add File Size option
+        
         file_size_label = ctk.CTkLabel(scrollable_frame, text="FILE SIZE", font=("Consolas", 16, "bold"), text_color="#FF0000")
         file_size_label.grid(row=row_idx, column=0, sticky="w", pady=(10, 5), columnspan=3)
         row_idx += 1
