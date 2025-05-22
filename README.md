@@ -1,4 +1,5 @@
-![image](https://github.com/user-attachments/assets/c0f53c12-768f-435d-9bbe-c6c2e110d4d0)
+![asset](https://github.com/user-attachments/assets/df536d9c-7b1d-4ebd-8ea3-e510f5651dcf)
+
 
 
 # Raanzor Stealer ⚡️
