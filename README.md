@@ -48,7 +48,7 @@
 - [x] 🪟 Windows Directory Deletion  
 - [x] 🔧 BootLoader Deletion  
 - [x] ⚠️ UAC Bypass (User Account Control)  
-- [x] 🧼 Automated File Deletion (select folders or files)
+- [x] 🧼 Automated Malware Detection
 
 > ⚠️ **Warning:**  
 > Destructive functions can permanently damage the target system. Use strictly in virtual machines, CTF labs, or ethical testing environments.  
