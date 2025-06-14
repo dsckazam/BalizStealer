@@ -90,21 +90,22 @@ python builder.py
 * Use **Test Webhook** button to verify webhook connectivity
 
 ---
-## ⚠️ Legal Warning
+## ⚠️ Legal Warning – Important Notice
 
-**Raanzor Stealer is strictly intended for educational, research, and ethical red teaming purposes only.**
+**Raanzor Stealer** is a cybersecurity tool **designed strictly for educational, research, and authorized red teaming purposes only.**
 
-This tool must be used **exclusively** in:
-- Virtual machines (VMs)
-- Sandboxed test environments
-- Capture The Flag (CTF) competitions
-- Authorized labs with **explicit consent**
+- **Unauthorized use, distribution, or deployment of this software on systems without explicit, informed consent is illegal and punishable by law.**
+- This tool **must only be run in controlled environments** such as:
+  - Virtual Machines (VMs)
+  - Sandboxed labs
+  - Capture The Flag (CTF) competitions
+  - Explicitly authorized security assessments
 
-🚫 **Unauthorized, malicious, or real-world deployment is strictly prohibited** and may violate computer crime laws in your country.  
-The author does **not condone** any illegal activity and is **not responsible** for any misuse of this code.
+- The author **does not endorse or support any malicious activity** or unlawful use.
+- Any misuse of this software is solely the responsibility of the user.
+- By downloading, running, or modifying this tool, you agree to comply with all applicable laws and regulations.
 
-By using this tool, you agree to use it **at your own risk** and assume full responsibility for your actions.
-
+**Failure to adhere to these terms may result in civil and/or criminal penalties.**
 
 ---
 
